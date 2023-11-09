@@ -763,9 +763,8 @@ void Motion(int x, int y)
 
 void main(int argc, char* argv[])
 {
-	//PlaySound("bgm.wav", NULL, SND_ASYNC | SND_LOOP);
-	//PlaySound(LPCWSTR£¨"bgm.wav"£©, NULL, SND_ASYNC | SND_LOOP);
-
+	PlaySound("inGame.wav", NULL, SND_ASYNC | SND_LOOP);
+	
 	srand(time(NULL));
 	for (int i = 0; i < 10; i++)
 	{
@@ -966,8 +965,8 @@ GLvoid drawScene(GLvoid)
 				{
 					glTranslatef(nemo.x, nemo.y, 0.0);
 					glRotatef(nemo.ro, 0, 0, 1);
-					//glBegin(GL_LINES);
-					glBegin(GL_POLYGON);
+					glBegin(GL_LINES);
+					//glBegin(GL_POLYGON);
 					glVertex2f(-25, -25);
 					glVertex2f(-25, +25);
 					glVertex2f(-25, +25);
@@ -1122,8 +1121,8 @@ GLvoid drawScene(GLvoid)
 		if (any.cut_active == 1)
 		{
 			glColor3ub(255, 255, 0);
-			//glBegin(GL_LINES);
-			glBegin(GL_POLYGON);
+			glBegin(GL_LINES);
+			//glBegin(GL_POLYGON);
 			glVertex2f(any.cut_x[0], any.cut_y[0]);
 			glVertex2f(any.cut_x[1], any.cut_y[1]);
 			glEnd();
