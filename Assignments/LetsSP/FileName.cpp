@@ -873,22 +873,22 @@ GLvoid drawScene(GLvoid)
 			}
 		}
 
-		glColor3ub(255, 255, 255);
-		glBegin(GL_LINES);
-		//glBegin(GL_POLYGON);
-		glVertex2f(0, 90);
-		glVertex2f(800, 90);
-		for (int i = 0; i <= 800; i += 50)
-		{
-			glVertex2f(i, 450);
-			glVertex2f(i, 600);
-		}
-		for (int i = 450; i <= 600; i += 50)
-		{
-			glVertex2f(0, i);
-			glVertex2f(800, i);
-		}
-		glEnd();
+		//glColor3ub(255, 255, 255);
+		//glBegin(GL_LINES);
+		////glBegin(GL_POLYGON);
+		//glVertex2f(0, 90);
+		//glVertex2f(800, 90);
+		//for (int i = 0; i <= 800; i += 50)
+		//{
+		//	glVertex2f(i, 450);
+		//	glVertex2f(i, 600);
+		//}
+		//for (int i = 450; i <= 600; i += 50)
+		//{
+		//	glVertex2f(0, i);
+		//	glVertex2f(800, i);
+		//}
+		//glEnd();
 
 		for (int i = 0; i < 100; i++)//별그리기
 		{
