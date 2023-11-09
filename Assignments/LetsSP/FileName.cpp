@@ -12,8 +12,9 @@ GLvoid drawScene(GLvoid);
 GLvoid Reshape(int w, int h);
 GLvoid KeyBoard(unsigned char key, int x, int y);
 
-struct Ob
+class Ob
 {
+public:
 	float x = -100;
 	float y = 20 + 25;
 	int ro = 0;
@@ -27,8 +28,9 @@ struct Ob
 	int big_sw = 0;
 };
 
-struct Ob2
+class Ob2
 {
+public:
 	float x = -100;
 	float y = 20 + 25;
 	int ro = 0;
@@ -45,13 +47,15 @@ struct Ob2
 	float turn = 0;//100으로 나누어쓰세요
 };
 
-struct Block
+class Block
 {
+public:
 	int active = 0;//0비어있음 1하나차있음 2꽉차있음오지마셈
 };
 
-struct Light
+class Light
 {
+public:
 	float x = 0;
 	float y = 0;
 	float gravity = 0;
@@ -872,6 +876,7 @@ GLvoid drawScene(GLvoid)
 
 		glColor3ub(255, 255, 255);
 		glBegin(GL_LINES);
+		//glBegin(GL_POLYGON);
 		glVertex2f(0, 90);
 		glVertex2f(800, 90);
 		for (int i = 0; i <= 800; i += 50)
@@ -961,7 +966,8 @@ GLvoid drawScene(GLvoid)
 				{
 					glTranslatef(nemo.x, nemo.y, 0.0);
 					glRotatef(nemo.ro, 0, 0, 1);
-					glBegin(GL_LINES);
+					//glBegin(GL_LINES);
+					glBegin(GL_POLYGON);
 					glVertex2f(-25, -25);
 					glVertex2f(-25, +25);
 					glVertex2f(-25, +25);
@@ -1116,7 +1122,8 @@ GLvoid drawScene(GLvoid)
 		if (any.cut_active == 1)
 		{
 			glColor3ub(255, 255, 0);
-			glBegin(GL_LINES);
+			//glBegin(GL_LINES);
+			glBegin(GL_POLYGON);
 			glVertex2f(any.cut_x[0], any.cut_y[0]);
 			glVertex2f(any.cut_x[1], any.cut_y[1]);
 			glEnd();
@@ -1194,10 +1201,10 @@ GLvoid KeyBoard(unsigned char key, int x, int y)
 		break;
 	case '+':
 		//global_Speed += 0.1f;
-		speed *= 1.5f;
+		speed /= 1.5f;
 		break;
 	case '-':
-		speed /= 1.5f;
+		speed *= 1.5f;
 		break;
     case 'q':
         exit(-1);
