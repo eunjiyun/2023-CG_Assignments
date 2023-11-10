@@ -97,7 +97,7 @@ int speed{ 20 };
 
 void Timer(int value)
 {
-	for (int i = 0; i < 10; i++)
+	for (int i{}; i < 10; ++i)
 	{
 		if (light[i].alpha > 0)
 		{
@@ -138,6 +138,20 @@ void Timer(int value)
 			up_tr[i].ro = 0;
 	}
 
+	//if (nemo.active == 1 && nemo.y < -50)
+	////if (/*nemo.active == 1 &&*/ nemo.x > 500)
+	//{
+	//	nemo.y = 600;
+	//	int ch = rand() % 2;
+	//	if (ch == 1)
+	//		nemo.ro = 0;
+	//	else
+	//		nemo.ro = 45;
+	//}
+	//else
+	//	nemo.y -= 3;
+	//	//nemo.x += 3;
+
 	if (nemo.active == 1 && nemo.y < -50)
 	{
 		nemo.y = 600;
@@ -148,7 +162,24 @@ void Timer(int value)
 			nemo.ro = 45;
 	}
 	else
+	{
+		// nemo.x += 3; // 기존 코드 주석 처리
+
+		// 좌에서 우로 이동하는 코드 추가
+		nemo.x += 3;
+		// 화면 오른쪽 끝을 벗어나면 화면 왼쪽 끝으로 초기화
+		if (nemo.x > 825)
+		{
+			nemo.x = -25;
+			int ch = rand() % 2;
+			if (ch == 1)
+				nemo.ro = 0;
+			else
+				nemo.ro = 45;
+		}
+		// y 좌표는 그대로 유지
 		nemo.y -= 3;
+	}
 
 	if (any.shack > 0)
 		any.shack--;
@@ -238,6 +269,7 @@ void Timer(int value)
 			{
 				nemo.active = 1;
 				nemo.y = 600;
+				//nemo.x = 0;
 
 				int ch = rand() % 2;
 				if (ch == 1)
