@@ -2,7 +2,6 @@
 #include <Windows.h>
 #include <iostream>
 #include<random>
-#include <math.h>
 #include <MMSystem.h> 
 #include"obj.h"
 #pragma comment(lib, "msimg32.lib")
@@ -10,11 +9,11 @@
 using namespace std;
 
 GLvoid drawScene(GLvoid);
-GLvoid Reshape(int w, int h);
-GLvoid KeyBoard(unsigned char key, int x, int y);
-void Mouse(int button, int state, int x, int y);
-void Timer(int value);
-void Motion(int x, int y);
+GLvoid Reshape(int, int);
+GLvoid KeyBoard(unsigned char, int, int);
+GLvoid Mouse(int, int, int, int);
+GLvoid Timer(int);
+GLvoid Motion(int, int);
 
 random_device gen;
 uniform_int_distribution<int> dist(0, 1);
@@ -32,7 +31,7 @@ Light light[10];
 int speed{ 20 };
 bool direction{ false };
 
-void main(int argc, char* argv[])
+GLvoid main(int argc, char* argv[])
 {
 	PlaySound("inGame.wav", NULL, SND_ASYNC | SND_LOOP);
 
@@ -124,7 +123,7 @@ GLvoid drawScene(GLvoid)
 
 
 
-		
+
 		//위에 지나가는 삼각형
 
 		glColor3ub(255, 255, any.shine);
@@ -328,7 +327,7 @@ GLvoid drawScene(GLvoid)
 
 	glFlush(); // 화면에 출력하기 
 }
-void Timer(int value)
+GLvoid Timer(int value)
 {
 	for (int i{}; i < 10; ++i)
 	{
@@ -415,7 +414,7 @@ void Timer(int value)
 			any.star_color[i] += 5;
 	}
 
-	
+
 
 	for (int i{}; i < 2; ++i)
 	{
@@ -476,7 +475,7 @@ void Timer(int value)
 	glutPostRedisplay(); // 화면 재 출력 
 	glutTimerFunc(speed, Timer, 1); // 타이머함수 재 설정
 }
-void Mouse(int button, int state, int x, int y)
+GLvoid Mouse(int button, int state, int x, int y)
 {
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{
@@ -572,7 +571,7 @@ void Mouse(int button, int state, int x, int y)
 							do
 							{
 								pass = 1;
-								while (1)
+								while (true)
 								{
 									int go_x2 = dist16(gen);
 									if (go_x2 != go_x)
@@ -670,7 +669,7 @@ void Mouse(int button, int state, int x, int y)
 							do
 							{
 								pass = 1;
-								while (1)
+								while (true)
 								{
 									int go_x2 = dist16(gen);
 									if (go_x2 != go_x)
@@ -757,7 +756,7 @@ void Mouse(int button, int state, int x, int y)
 							do
 							{
 								pass = 1;
-								while (1)
+								while (true)
 								{
 									int go_x2 = dist16(gen);
 									if (go_x2 != go_x)
@@ -841,7 +840,7 @@ void Mouse(int button, int state, int x, int y)
 							do
 							{
 								pass = 1;
-								while (1)
+								while (true)
 								{
 									int go_x2 = dist16(gen);
 									if (go_x2 != go_x)
@@ -904,7 +903,7 @@ void Mouse(int button, int state, int x, int y)
 
 				if (up_tr[0].active == 1 && x > up_tr[0].x - 25 && x < up_tr[0].x + 25 && y > up_tr[0].y - 25 && y < up_tr[0].y + 25)
 				{
-					
+
 
 					if (semo[0].active == 0 && semo[1].active == 0)
 					{
@@ -925,7 +924,7 @@ void Mouse(int button, int state, int x, int y)
 
 				if (up_tr[0].active == 1 && x > up_tr[0].x - 25 && x < up_tr[0].x + 25 && y > up_tr[0].y - 25 && y < up_tr[0].y + 25)
 				{
-					
+
 
 					if (semo[0].active == 0 && semo[1].active == 0)
 					{
@@ -951,7 +950,7 @@ GLvoid Reshape(int w, int h)
 	glViewport(0, 0, w, h);
 	glOrtho(0, 800, 600, 0, -1.0, 1.0);
 }
-void Motion(int x, int y)
+GLvoid Motion(int x, int y)
 {
 	if (any.cut_active == 1)
 	{
