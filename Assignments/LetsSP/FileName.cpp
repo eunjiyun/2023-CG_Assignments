@@ -21,6 +21,7 @@ uniform_int_distribution<int> dist400(0, 399);
 uniform_int_distribution<int> dist16(0, 15);
 uniform_int_distribution<int> dist700(0, 699);
 uniform_int_distribution<int> dist300(0, 299);
+uniform_int_distribution<int> dist3(0, 2);
 
 Ob up_tr[1];
 Ob nemo;
@@ -35,9 +36,7 @@ GLvoid main(int argc, char* argv[])
 {
 	PlaySound("inGame.wav", NULL, SND_ASYNC | SND_LOOP);
 
-
-	//up_tr[i].x = i * 85;
-	up_tr[0].ro = 0 * 36;
+	up_tr[0].ro = 0;
 	up_tr[0].y = 550;
 
 	nemo.x = 400;
@@ -121,9 +120,6 @@ GLvoid drawScene(GLvoid)
 			}
 		}
 
-
-
-
 		//위에 지나가는 삼각형
 
 		glColor3ub(255, 255, any.shine);
@@ -132,8 +128,7 @@ GLvoid drawScene(GLvoid)
 			glPushMatrix();
 			{
 				glTranslatef(up_tr[0].x, up_tr[0].y, 0.0);
-				//glRotatef(up_tr[i].ro, 0.0, 0.0, 1.0);
-
+				
 				glBegin(GL_POLYGON);
 				glColor3ub(0, 255, 0);
 				glVertex2f(-75, -25);
@@ -156,18 +151,28 @@ GLvoid drawScene(GLvoid)
 				glRotatef(nemo.ro, 0, 0, 1);
 				glBegin(GL_POLYGON);
 
-				if (45 == nemo.ro)
+				if (0 == nemo.shape)
 				{
 					glVertex2f(-25, -25);
 					glVertex2f(-25, +25);
 					glVertex2f(+25, +25);
 					glVertex2f(+25, -25);
 				}
-				else
+				else if(1== nemo.shape)
 				{
 					glVertex2f(-25, -25);
 					glVertex2f(25, 25);
 					glVertex2f(-25, 25);
+				}
+				else if (2 == nemo.shape)
+				{
+					for (int i{}; i < 5; ++i)
+					{
+						float theta = 2.0f * 3.14159265358979323846f * float(i) / 5.0f; // 5개의 정점을 나타냄
+						float x = 45 * cos(theta); // 반지름이 25인 원의 x 좌표
+						float y = 45 * sin(theta); // 반지름이 25인 원의 y 좌표
+						glVertex2f(x, y);
+					}
 				}
 				glEnd();
 
@@ -384,6 +389,8 @@ GLvoid Timer(int value)
 			nemo.ro = 0;
 		else
 			nemo.ro = 45;
+
+		nemo.shape = dist3(gen);
 	}
 	else
 	{

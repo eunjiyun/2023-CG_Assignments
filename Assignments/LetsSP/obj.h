@@ -14,6 +14,7 @@ public:
 
 	float big = 1;
 	int big_sw = 0;
+	int shape;
 };
 
 class Ob2
