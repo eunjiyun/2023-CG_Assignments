@@ -86,7 +86,7 @@ public:
 	int shine_sw = 0;
 };
 
-Ob up_tr[10];
+Ob up_tr[1];
 Ob nemo;
 Ob2 semo[2];
 Ob star[100];
@@ -123,7 +123,7 @@ void Timer(int value)
 			any.shine_sw = 0;
 	}
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 1; i++)
 	{
 		up_tr[i].x += 1;
 		if (up_tr[i].x > 825)
@@ -710,7 +710,7 @@ void Mouse(int button, int state, int x, int y)
 		{
 			if (any.move == 1)//왼쪽거
 			{
-				for (int i = 0; i < 10; i++)
+				for (int i = 0; i < 1; i++)
 				{
 					if (up_tr[i].active == 1 && x > up_tr[i].x - 25 && x < up_tr[i].x + 25 && y > up_tr[i].y - 25 && y < up_tr[i].y + 25)
 					{
@@ -802,10 +802,11 @@ void main(int argc, char* argv[])
 	PlaySound("inGame.wav", NULL, SND_ASYNC | SND_LOOP);
 	
 	srand(time(NULL));
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 1; i++)
 	{
 		up_tr[i].x = i * 85;
 		up_tr[i].ro = i * 36;
+		up_tr[i].y = 550;
 	}
 	nemo.x = 400;
 	nemo.y = 600;
@@ -879,35 +880,35 @@ GLvoid drawScene(GLvoid)
 			}
 		}
 
-		for (int i = 0; i < 3; i++)//블록체우기
-		{
-			for (int j = 0; j < 16; j++)
-			{
-				glPushMatrix();
-				{
-					glTranslated(j * 50 + 25, 575 - i * 50, 0);
-					if (block[i][j].active > 0)
-					{
-						glBegin(GL_POLYGON);
-						glColor3ub(150, 150, 150);
-						glVertex2f(25, -25);
-						glVertex2f(25, 25);
-						glVertex2f(-25, 25);
-						glEnd();
-					}
-					if (block[i][j].active > 1)
-					{
-						glBegin(GL_POLYGON);
-						glColor3ub(150, 150, 150);
-						glVertex2f(25, -25);
-						glVertex2f(-25, -25);
-						glVertex2f(-25, 25);
-						glEnd();
-					}
-				}
-				glPopMatrix();
-			}
-		}
+		//for (int i{}; i < 3; ++i)//블록체우기
+		//{
+		//	for (int j{}; j < 16; ++j)
+		//	{
+		//		glPushMatrix();
+		//		{
+		//			glTranslated(j * 50 + 25, 575 - i * 50, 0);
+		//			if (block[i][j].active > 0)
+		//			{
+		//				glBegin(GL_POLYGON);
+		//				glColor3ub(150, 150, 150);
+		//				glVertex2f(25, -25);
+		//				glVertex2f(25, 25);
+		//				glVertex2f(-25, 25);
+		//				glEnd();
+		//			}
+		//			if (block[i][j].active > 1)
+		//			{
+		//				glBegin(GL_POLYGON);
+		//				glColor3ub(150, 150, 150);
+		//				glVertex2f(25, -25);
+		//				glVertex2f(-25, -25);
+		//				glVertex2f(-25, 25);
+		//				glEnd();
+		//			}
+		//		}
+		//		glPopMatrix();
+		//	}
+		//}
 
 		//glColor3ub(255, 255, 255);
 		//glBegin(GL_LINES);
@@ -926,7 +927,7 @@ GLvoid drawScene(GLvoid)
 		//}
 		//glEnd();
 
-		for (int i = 0; i < 100; i++)//별그리기
+		for (int i{}; i < 100; ++i)//별그리기
 		{
 			glPushMatrix();
 			{
@@ -961,7 +962,7 @@ GLvoid drawScene(GLvoid)
 			glPopMatrix();
 		}
 
-		for (int i = 0; i < 10; i++)//위에 지나가는 삼각형
+		for (int i{}; i < 1; ++i)//위에 지나가는 삼각형
 		{
 			glColor3ub(255, 255, any.shine);
 			if (up_tr[i].active == 1)
@@ -980,6 +981,9 @@ GLvoid drawScene(GLvoid)
 				glPopMatrix();
 			}
 		}
+
+		
+
 
 		glPushMatrix();//네모그리기
 		{
