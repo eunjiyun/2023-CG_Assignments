@@ -94,6 +94,7 @@ Any any;
 Block block[3][16];
 Light light[10];
 int speed{ 20 };
+bool direction{ false };
 
 void Timer(int value)
 {
@@ -125,17 +126,25 @@ void Timer(int value)
 
 	for (int i = 0; i < 1; i++)
 	{
-		up_tr[i].x += 1;
+		//up_tr[i].x += 5;
 		if (up_tr[i].x > 825)
-		{
-			up_tr[i].x = -25;
-			up_tr[i].active = 1;
-		}
+			direction = true;
+		else if(0> up_tr[i].x)
+			direction = false;
 
+		if(!direction)
+			up_tr[i].x += 5;
+		else
+			up_tr[i].x -= 5;
+
+		
 		if (up_tr[i].ro < 357)
 			up_tr[i].ro += 2;
 		else
+		{
+			//up_tr[i].ro -= 2;
 			up_tr[i].ro = 0;
+		}
 	}
 
 	//if (nemo.active == 1 && nemo.y < -50)
@@ -804,7 +813,7 @@ void main(int argc, char* argv[])
 	srand(time(NULL));
 	for (int i = 0; i < 1; i++)
 	{
-		up_tr[i].x = i * 85;
+		//up_tr[i].x = i * 85;
 		up_tr[i].ro = i * 36;
 		up_tr[i].y = 550;
 	}
@@ -989,9 +998,6 @@ GLvoid drawScene(GLvoid)
 				glPopMatrix();
 			}
 		}
-
-		
-
 
 		glPushMatrix();//네모그리기
 		{
