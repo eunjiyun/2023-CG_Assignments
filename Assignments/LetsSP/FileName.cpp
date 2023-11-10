@@ -191,7 +191,7 @@ void Timer(int value)
 	if (any.shack > 0)
 		any.shack--;
 
-	for (int i = 0; i < 3; i++)
+	for (int i{}; i < 3; ++i)
 	{
 		if (any.star_color[i] >= 255)
 			any.star_color[i] = 0;
@@ -199,7 +199,7 @@ void Timer(int value)
 			any.star_color[i] += 5;
 	}
 
-	for (int i = 0; i < 100; i++)
+	for (int i{}; i < 100; ++i)
 	{
 		if (star[i].active == 1)
 		{
@@ -232,7 +232,7 @@ void Timer(int value)
 		}
 	}
 
-	for (int i = 0; i < 2; i++)
+	for (int i{}; i < 2; ++i)
 	{
 		if (semo[i].move_count != 100 && semo[i].active == 1)
 		{
@@ -369,7 +369,7 @@ void Mouse(int button, int state, int x, int y)
 						semo[1].y = nemo.y;
 
 						//파티클도 만들어 줘야지~!
-						for (int s = 0; s < 10; s++)
+						for (int s{}; s < 10; ++s)
 						{
 							float rands = rand() % 400;
 							light[s].alpha = 1;
@@ -381,7 +381,7 @@ void Mouse(int button, int state, int x, int y)
 
 						//넌 어디로 날라갈레 삼각형아?
 						int go_x = -1;
-						for (int i = 0; i < 2; i++)
+						for (int i{}; i < 2; ++i)
 						{
 							int go_y = 2;
 							int pass = 1;
@@ -884,52 +884,7 @@ GLvoid drawScene(GLvoid)
 			}
 		}
 
-		//for (int i{}; i < 3; ++i)//블록체우기
-		//{
-		//	for (int j{}; j < 16; ++j)
-		//	{
-		//		glPushMatrix();
-		//		{
-		//			glTranslated(j * 50 + 25, 575 - i * 50, 0);
-		//			if (block[i][j].active > 0)
-		//			{
-		//				glBegin(GL_POLYGON);
-		//				glColor3ub(150, 150, 150);
-		//				glVertex2f(25, -25);
-		//				glVertex2f(25, 25);
-		//				glVertex2f(-25, 25);
-		//				glEnd();
-		//			}
-		//			if (block[i][j].active > 1)
-		//			{
-		//				glBegin(GL_POLYGON);
-		//				glColor3ub(150, 150, 150);
-		//				glVertex2f(25, -25);
-		//				glVertex2f(-25, -25);
-		//				glVertex2f(-25, 25);
-		//				glEnd();
-		//			}
-		//		}
-		//		glPopMatrix();
-		//	}
-		//}
 
-		//glColor3ub(255, 255, 255);
-		//glBegin(GL_LINES);
-		////glBegin(GL_POLYGON);
-		//glVertex2f(0, 90);
-		//glVertex2f(800, 90);
-		//for (int i = 0; i <= 800; i += 50)
-		//{
-		//	glVertex2f(i, 450);
-		//	glVertex2f(i, 600);
-		//}
-		//for (int i = 450; i <= 600; i += 50)
-		//{
-		//	glVertex2f(0, i);
-		//	glVertex2f(800, i);
-		//}
-		//glEnd();
 
 		for (int i{}; i < 100; ++i)//별그리기
 		{
@@ -1004,28 +959,23 @@ GLvoid drawScene(GLvoid)
 					glTranslatef(nemo.x, nemo.y, 0.0);
 					glRotatef(nemo.ro, 0, 0, 1);
 					glBegin(GL_POLYGON);
-					glVertex2f(-25, -25);
-					glVertex2f(-25, +25);
-					glVertex2f(+25, +25);
-					glVertex2f(+25, -25);
+
+					if (45 == nemo.ro)
+					{
+						glVertex2f(-25, -25);
+						glVertex2f(-25, +25);
+						glVertex2f(+25, +25);
+						glVertex2f(+25, -25);
+					}
+					else
+					{
+						glVertex2f(-25, -25);
+						glVertex2f(25, 25);
+						glVertex2f(-25, 25);
+					}
 					glEnd();
 				}
-				//else
-				//{
-				//	glTranslatef(nemo.x, nemo.y, 0.0);
-				//	glRotatef(nemo.ro, 0, 0, 1);
-				//	glBegin(GL_LINES);
-				//	//glBegin(GL_POLYGON);
-				//	glVertex2f(-25, -25);
-				//	glVertex2f(-25, +25);
-				//	glVertex2f(-25, +25);
-				//	glVertex2f(+25, +25);
-				//	glVertex2f(+25, +25);
-				//	glVertex2f(+25, -25);
-				//	glVertex2f(+25, -25);
-				//	glVertex2f(-25, -25);
-				//	glEnd();
-				//}
+
 			}
 		}
 		glPopMatrix();
@@ -1191,56 +1141,6 @@ GLvoid KeyBoard(unsigned char key, int x, int y)
 {
 	switch (key)
 	{
-	case 'o'://직각투영
-		// projection_Flag = false;
-		break;
-	case 'p'://원근 투영
-		//projection_Flag = true;
-		break;
-	case 'z'://카메라 z축이동
-		// if (projection_Flag)cameraZ += 0.1f;
-		break;
-	case 'Z'://카메라 z축이동
-		//   if (projection_Flag)cameraZ -= 0.1f;
-		break;
-	case 'y'://카메라 음의 방향 회전
-		// y_Angle--;
-		break;
-	case 'Y':
-		// y_Angle++;
-		break;
-	case 'm':
-	case 'M'://미로 위아래
-		//m_Flag = !m_Flag;
-		break;
-	case 'v':
-	case 'V':
-		//v_Flag = !v_Flag;
-		break;
-	case 'r':
-	case 'R':
-		//make_Maze();
-		break;
-	case 's':
-	case 'S':
-		//s_Flag = true;
-		break;
-	case '=':
-
-	case '_':
-		//global_Speed -= 0.1f;
-		break;
-	case 'c'://모든 값 초기화
-		//clear();
-		break;
-	case '1':
-		//third_View = false;
-		break;
-	case '3':
-		//third_View = true;
-
-
-		break;
 	case 'l':
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		break;
@@ -1248,7 +1148,6 @@ GLvoid KeyBoard(unsigned char key, int x, int y)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		break;
 	case '+':
-		//global_Speed += 0.1f;
 		speed /= 1.5f;
 		break;
 	case '-':
