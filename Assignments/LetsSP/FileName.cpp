@@ -415,7 +415,8 @@ void Mouse(int button, int state, int x, int y)
 								semo[i].point_x = 800;
 							semo[i].point_y = semo[i].y;
 							semo[i].move_x = go_x * 50 + 25;
-							semo[i].move_y = 575 - go_y * 50;
+							//semo[i].move_y = 575 - go_y * 50;
+							semo[i].move_y = 650;
 							semo[i].move_count = 0;
 
 							if (i == 0 && block[go_y][go_x].active == 0)
@@ -512,7 +513,8 @@ void Mouse(int button, int state, int x, int y)
 								semo[i].point_x = 800;
 							semo[i].point_y = semo[i].y;
 							semo[i].move_x = go_x * 50 + 25;
-							semo[i].move_y = 575 - go_y * 50;
+							//semo[i].move_y = 575 - go_y * 50;
+							semo[i].move_y = 650;
 							semo[i].move_count = 0;
 
 							if (i == 0 && block[go_y][go_x].active == 0)
@@ -598,7 +600,8 @@ void Mouse(int button, int state, int x, int y)
 								semo[i].point_x = 800;
 							semo[i].point_y = semo[i].y;
 							semo[i].move_x = go_x * 50 + 25;
-							semo[i].move_y = 575 - go_y * 50;
+							//semo[i].move_y = 575 - go_y * 50;
+							semo[i].move_y = 650;
 							semo[i].move_count = 0;
 
 							if (i == 0 && block[go_y][go_x].active == 0)
@@ -681,7 +684,8 @@ void Mouse(int button, int state, int x, int y)
 								semo[i].point_x = 800;
 							semo[i].point_y = semo[i].y;
 							semo[i].move_x = go_x * 50 + 25;
-							semo[i].move_y = 575 - go_y * 50;
+							//semo[i].move_y = 575 - go_y * 50;
+							semo[i].move_y = 650;
 							semo[i].move_count = 0;
 
 							if (i == 0 && block[go_y][go_x].active == 0)
