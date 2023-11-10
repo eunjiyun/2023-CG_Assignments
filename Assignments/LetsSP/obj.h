@@ -1,6 +1,6 @@
 #pragma once
 
-class Ob
+class Fruits
 {
 public:
 	float x = -100;
@@ -17,7 +17,7 @@ public:
 	int shape;
 };
 
-class Ob2
+class Baskets
 {
 public:
 	float x = -100;
@@ -36,7 +36,7 @@ public:
 	float turn = 0;//100으로 나누어쓰세요
 };
 
-class Block
+class Floor
 {
 public:
 	int active = 0;//0비어있음 1하나차있음 2꽉차있음오지마셈

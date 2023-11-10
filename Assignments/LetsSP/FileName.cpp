@@ -23,11 +23,11 @@ uniform_int_distribution<int> dist700(0, 699);
 uniform_int_distribution<int> dist300(0, 299);
 uniform_int_distribution<int> dist3(0, 2);
 
-Ob up_tr[1];
-Ob nemo;
-Ob2 semo[2];
+Fruits up_tr[1];
+Fruits nemo;
+Baskets semo[2];
 Any any;
-Block block[3][16];
+Floor block[3][16];
 Light light[10];
 int speed{ 20 };
 bool direction{ false };
@@ -131,10 +131,10 @@ GLvoid drawScene(GLvoid)
 				
 				glBegin(GL_POLYGON);
 				glColor3ub(0, 255, 0);
-				glVertex2f(-75, -25);
-				glVertex2f(-75, +25);
-				glVertex2f(+75, +25);
-				glVertex2f(+75, -25);
+				glVertex2f(-120, -25);
+				glVertex2f(-120, +25);
+				glVertex2f(+120, +25);
+				glVertex2f(+120, -25);
 				glEnd();
 			}
 			glPopMatrix();
@@ -153,24 +153,24 @@ GLvoid drawScene(GLvoid)
 
 				if (0 == nemo.shape)
 				{
-					glVertex2f(-25, -25);
-					glVertex2f(-25, +25);
-					glVertex2f(+25, +25);
-					glVertex2f(+25, -25);
+					glVertex2f(-50, -50);
+					glVertex2f(-50, +50);
+					glVertex2f(+50, +50);
+					glVertex2f(+50, -50);
 				}
 				else if(1== nemo.shape)
 				{
-					glVertex2f(-25, -25);
-					glVertex2f(25, 25);
-					glVertex2f(-25, 25);
+					glVertex2f(-50, -50);
+					glVertex2f(50, 50);
+					glVertex2f(-50, 50);
 				}
 				else if (2 == nemo.shape)
 				{
 					for (int i{}; i < 5; ++i)
 					{
 						float theta = 2.0f * 3.14159265358979323846f * float(i) / 5.0f; // 5개의 정점을 나타냄
-						float x = 45 * cos(theta); // 반지름이 25인 원의 x 좌표
-						float y = 45 * sin(theta); // 반지름이 25인 원의 y 좌표
+						float x = 50 * cos(theta); // 반지름이 25인 원의 x 좌표
+						float y = 50 * sin(theta); // 반지름이 25인 원의 y 좌표
 						glVertex2f(x, y);
 					}
 				}
@@ -193,9 +193,9 @@ GLvoid drawScene(GLvoid)
 						glTranslatef(semo[0].x, semo[0].y, 0.0);
 						glRotatef(semo[0].turn * semo[0].move_count, 0, 0, 1);
 						glBegin(GL_POLYGON);
-						glVertex2f(-25, -25);
-						glVertex2f(25, 25);
-						glVertex2f(-25, 25);
+						glVertex2f(-50, -50);
+						glVertex2f(50, 50);
+						glVertex2f(-50, 50);
 						glEnd();
 					}
 					glPopMatrix();
@@ -208,9 +208,9 @@ GLvoid drawScene(GLvoid)
 						glTranslatef(semo[1].x, semo[1].y, 0.0);
 						glRotatef(semo[1].turn * semo[1].move_count, 0, 0, 1);
 						glBegin(GL_POLYGON);
-						glVertex2f(25, -25);
-						glVertex2f(-25, -25);
-						glVertex2f(25, 25);
+						glVertex2f(50, -50);
+						glVertex2f(-50, -50);
+						glVertex2f(50, 50);
 						glEnd();
 					}
 					glPopMatrix();
@@ -225,9 +225,9 @@ GLvoid drawScene(GLvoid)
 						glTranslatef(semo[0].x, semo[0].y, 0.0);
 						glRotatef(semo[0].turn * semo[0].move_count, 0, 0, 1);
 						glBegin(GL_POLYGON);
-						glVertex2f(-25, -25);
-						glVertex2f(25, -25);
-						glVertex2f(-25, 25);
+						glVertex2f(-50, -50);
+						glVertex2f(50, -50);
+						glVertex2f(-50, 50);
 						glEnd();
 					}
 					glPopMatrix();
@@ -240,9 +240,9 @@ GLvoid drawScene(GLvoid)
 						glTranslatef(semo[1].x, semo[1].y, 0.0);
 						glRotatef(semo[1].turn * semo[1].move_count, 0, 0, 1);
 						glBegin(GL_POLYGON);
-						glVertex2f(25, -25);
-						glVertex2f(-25, 25);
-						glVertex2f(25, 25);
+						glVertex2f(50, -50);
+						glVertex2f(-50, 50);
+						glVertex2f(50, 50);
 						glEnd();
 					}
 					glPopMatrix();
@@ -258,9 +258,9 @@ GLvoid drawScene(GLvoid)
 						glRotatef(semo[0].turn * semo[0].move_count, 0, 0, 1);
 						glRotatef(45, 0, 0, 1);
 						glBegin(GL_POLYGON);
-						glVertex2f(-25, -25);
-						glVertex2f(25, -25);
-						glVertex2f(-25, 25);
+						glVertex2f(-50, -50);
+						glVertex2f(50, -50);
+						glVertex2f(-50, 50);
 						glEnd();
 					}
 					glPopMatrix();
@@ -274,9 +274,9 @@ GLvoid drawScene(GLvoid)
 						glRotatef(semo[1].turn * semo[1].move_count, 0, 0, 1);
 						glRotatef(45, 0, 0, 1);
 						glBegin(GL_POLYGON);
-						glVertex2f(25, -25);
-						glVertex2f(-25, 25);
-						glVertex2f(25, 25);
+						glVertex2f(50, -50);
+						glVertex2f(-50, 50);
+						glVertex2f(50, 50);
 						glEnd();
 					}
 					glPopMatrix();
@@ -292,9 +292,9 @@ GLvoid drawScene(GLvoid)
 						glRotatef(semo[0].turn * semo[0].move_count, 0, 0, 1);
 						glRotatef(-45, 0, 0, 1);
 						glBegin(GL_POLYGON);
-						glVertex2f(-25, -25);
-						glVertex2f(25, -25);
-						glVertex2f(-25, 25);
+						glVertex2f(-50, -50);
+						glVertex2f(50, -50);
+						glVertex2f(-50, 50);
 						glEnd();
 					}
 					glPopMatrix();
@@ -308,9 +308,9 @@ GLvoid drawScene(GLvoid)
 						glRotatef(semo[1].turn * semo[1].move_count, 0, 0, 1);
 						glRotatef(-45, 0, 0, 1);
 						glBegin(GL_POLYGON);
-						glVertex2f(25, -25);
-						glVertex2f(-25, 25);
-						glVertex2f(25, 25);
+						glVertex2f(50, -50);
+						glVertex2f(-50, 50);
+						glVertex2f(50, 50);
 						glEnd();
 					}
 					glPopMatrix();
