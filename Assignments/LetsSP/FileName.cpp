@@ -26,7 +26,6 @@ uniform_int_distribution<int> dist300(0, 299);
 Ob up_tr[1];
 Ob nemo;
 Ob2 semo[2];
-Ob star[100];
 Any any;
 Block block[3][16];
 Light light[10];
@@ -46,8 +45,7 @@ void main(int argc, char* argv[])
 	nemo.y = 600;
 	semo[0].active = 0;
 	semo[1].active = 0;
-	for (int i{}; i < 100; ++i)
-		star[i].active = 0;
+
 
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGBA); // 디스플레이 모드 설정 
@@ -126,41 +124,7 @@ GLvoid drawScene(GLvoid)
 
 
 
-		for (int i{}; i < 100; ++i)//별그리기
-		{
-			glPushMatrix();
-			{
-				if (star[i].active == 1)
-				{
-					glTranslatef(star[i].x, star[i].y, 0);
-					glRotatef(star[i].ro, 0, 0, 1);
-					glScalef(star[i].big, star[i].big, 1);
-
-					glShadeModel(GL_SMOOTH);
-
-					glBegin(GL_POLYGON);
-					glColor3ub(any.star_color[0], any.star_color[1], 255);
-					glVertex2f(0, -25);
-					glColor3ub(any.star_color[1], 255, any.star_color[2]);
-					glVertex2f(-25, 25);
-					glColor3ub(255, any.star_color[2], any.star_color[0]);
-					glVertex2f(25, 25);
-					glEnd();
-					glBegin(GL_POLYGON);
-					glColor3ub(any.star_color[0], any.star_color[1], 255);
-					glVertex2f(25, -10);
-					glColor3ub(any.star_color[1], 255, any.star_color[2]);
-					glVertex2f(0, 40);
-					glColor3ub(255, any.star_color[2], any.star_color[0]);
-					glVertex2f(-25, -10);
-					glEnd();
-
-					glShadeModel(GL_FLAT);
-				}
-			}
-			glPopMatrix();
-		}
-
+		
 		//위에 지나가는 삼각형
 
 		glColor3ub(255, 255, any.shine);
@@ -451,38 +415,7 @@ void Timer(int value)
 			any.star_color[i] += 5;
 	}
 
-	for (int i{}; i < 100; ++i)
-	{
-		if (star[i].active == 1)
-		{
-			if (star[i].ro < 360)
-				star[i].ro += 5;
-			else
-				star[i].ro = 0;
-
-			if (star[i].move_count != 0)
-			{
-				star[i].x += star[i].move_x;
-				star[i].y += star[i].move_y;
-				star[i].move_count--;
-			}
-
-			if (star[i].big_sw == 0)
-			{
-				if (star[i].big < 1.5)
-					star[i].big += 0.05;
-				else
-					star[i].big_sw = 1;
-			}
-			else if (star[i].big_sw == 1)
-			{
-				if (star[i].big > 0.5)
-					star[i].big -= 0.05;
-				else
-					star[i].big_sw = 0;
-			}
-		}
-	}
+	
 
 	for (int i{}; i < 2; ++i)
 	{
@@ -971,17 +904,7 @@ void Mouse(int button, int state, int x, int y)
 
 				if (up_tr[0].active == 1 && x > up_tr[0].x - 25 && x < up_tr[0].x + 25 && y > up_tr[0].y - 25 && y < up_tr[0].y + 25)
 				{
-					star[any.star_count].x = up_tr[0].x;
-					star[any.star_count].y = up_tr[0].y;
-					up_tr[0].active = 0;
-					semo[0].active = 0;
-					semo[0].y = 800;
-					star[any.star_count].active = 1;
-					star[any.star_count].move_count = 50;
-					star[any.star_count].move_x = (dist700(gen) + 50 - star[any.star_count].x) / 50;
-					star[any.star_count].move_y = (dist300(gen) + 150 - star[any.star_count].y) / 50;
-					any.star_count++;
-					//i = 10;
+					
 
 					if (semo[0].active == 0 && semo[1].active == 0)
 					{
@@ -1002,17 +925,7 @@ void Mouse(int button, int state, int x, int y)
 
 				if (up_tr[0].active == 1 && x > up_tr[0].x - 25 && x < up_tr[0].x + 25 && y > up_tr[0].y - 25 && y < up_tr[0].y + 25)
 				{
-					star[any.star_count].x = up_tr[0].x;
-					star[any.star_count].y = up_tr[0].y;
-					up_tr[0].active = 0;
-					semo[1].active = 0;
-					semo[1].y = 800;
-					star[any.star_count].active = 1;
-					star[any.star_count].move_count = 50;
-					star[any.star_count].move_x = (dist700(gen) + 50 - star[any.star_count].x) / 50;
-					star[any.star_count].move_y = (dist300(gen) + 150 - star[any.star_count].y) / 50;
-					any.star_count++;
-					//i = 10;
+					
 
 					if (semo[0].active == 0 && semo[1].active == 0)
 					{
