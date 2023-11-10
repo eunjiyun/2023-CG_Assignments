@@ -124,28 +124,26 @@ void Timer(int value)
 			any.shine_sw = 0;
 	}
 
-	for (int i = 0; i < 1; i++)
+
+	if (up_tr[0].x > 825)
+		direction = true;
+	else if (0 > up_tr[0].x)
+		direction = false;
+
+	if (!direction)
+		up_tr[0].x += 5;
+	else
+		up_tr[0].x -= 5;
+
+
+	if (up_tr[0].ro < 357)
+		up_tr[0].ro += 2;
+	else
 	{
-		//up_tr[i].x += 5;
-		if (up_tr[i].x > 825)
-			direction = true;
-		else if(0> up_tr[i].x)
-			direction = false;
-
-		if(!direction)
-			up_tr[i].x += 5;
-		else
-			up_tr[i].x -= 5;
-
-		
-		if (up_tr[i].ro < 357)
-			up_tr[i].ro += 2;
-		else
-		{
-			//up_tr[i].ro -= 2;
-			up_tr[i].ro = 0;
-		}
+		//up_tr[i].ro -= 2;
+		up_tr[0].ro = 0;
 	}
+
 
 	//if (nemo.active == 1 && nemo.y < -50)
 	////if (/*nemo.active == 1 &&*/ nemo.x > 500)
@@ -469,7 +467,7 @@ void Mouse(int button, int state, int x, int y)
 						semo[1].y = nemo.y;
 
 						//파티클도 만들어 줘야지~!
-						for (int s = 0; s < 10; s++)
+						for (int s{}; s < 10; ++s)
 						{
 							float rands = rand() % 400;
 							light[s].alpha = 1;
@@ -481,7 +479,7 @@ void Mouse(int button, int state, int x, int y)
 
 						//넌 어디로 날라갈레 삼각형아?
 						int go_x = -1;
-						for (int i = 0; i < 2; i++)
+						for (int i{}; i < 2; ++i)
 						{
 							int go_y = 2;
 							int pass = 1;
@@ -556,7 +554,7 @@ void Mouse(int button, int state, int x, int y)
 						semo[1].y = nemo.y;
 
 						//파티클도 만들어 줘야지~!
-						for (int s = 0; s < 10; s++)
+						for (int s{}; s < 10; ++s)
 						{
 							float rands = rand() % 400;
 							light[s].alpha = 1;
@@ -568,7 +566,7 @@ void Mouse(int button, int state, int x, int y)
 
 						//넌 어디로 날라갈레 삼각형아?
 						int go_x = -1;
-						for (int i = 0; i < 2; i++)
+						for (int i{}; i < 2; ++i)
 						{
 							int go_y = 2;
 							int pass = 1;
@@ -640,7 +638,7 @@ void Mouse(int button, int state, int x, int y)
 						semo[1].y = nemo.y;
 
 						//파티클도 만들어 줘야지~!
-						for (int s = 0; s < 10; s++)
+						for (int s{}; s < 10; ++s)
 						{
 							float rands = rand() % 400;
 							light[s].alpha = 1;
@@ -652,7 +650,7 @@ void Mouse(int button, int state, int x, int y)
 
 						//넌 어디로 날라갈레 삼각형아?
 						int go_x = -1;
-						for (int i = 0; i < 2; i++)
+						for (int i{}; i < 2; ++i)
 						{
 							int go_y = 2;
 							int pass = 1;
@@ -719,67 +717,65 @@ void Mouse(int button, int state, int x, int y)
 		{
 			if (any.move == 1)//왼쪽거
 			{
-				for (int i = 0; i < 1; i++)
+
+				if (up_tr[0].active == 1 && x > up_tr[0].x - 25 && x < up_tr[0].x + 25 && y > up_tr[0].y - 25 && y < up_tr[0].y + 25)
 				{
-					if (up_tr[i].active == 1 && x > up_tr[i].x - 25 && x < up_tr[i].x + 25 && y > up_tr[i].y - 25 && y < up_tr[i].y + 25)
+					star[any.star_count].x = up_tr[0].x;
+					star[any.star_count].y = up_tr[0].y;
+					up_tr[0].active = 0;
+					semo[0].active = 0;
+					semo[0].y = 800;
+					star[any.star_count].active = 1;
+					star[any.star_count].move_count = 50;
+					star[any.star_count].move_x = (rand() % 700 + 50 - star[any.star_count].x) / 50;
+					star[any.star_count].move_y = (rand() % 300 + 150 - star[any.star_count].y) / 50;
+					any.star_count++;
+					//i = 10;
+
+					if (semo[0].active == 0 && semo[1].active == 0)
 					{
-						star[any.star_count].x = up_tr[i].x;
-						star[any.star_count].y = up_tr[i].y;
-						up_tr[i].active = 0;
-						semo[0].active = 0;
-						semo[0].y = 800;
-						star[any.star_count].active = 1;
-						star[any.star_count].move_count = 50;
-						star[any.star_count].move_x = (rand() % 700 + 50 - star[any.star_count].x) / 50;
-						star[any.star_count].move_y = (rand() % 300 + 150 - star[any.star_count].y) / 50;
-						any.star_count++;
-						i = 10;
+						nemo.active = 1;
+						nemo.y = 600;
 
-						if (semo[0].active == 0 && semo[1].active == 0)
-						{
-							nemo.active = 1;
-							nemo.y = 600;
-
-							int ch = rand() % 2;
-							if (ch == 1)
-								nemo.ro = 0;
-							else
-								nemo.ro = 45;
-						}
+						int ch = rand() % 2;
+						if (ch == 1)
+							nemo.ro = 0;
+						else
+							nemo.ro = 45;
 					}
 				}
+
 			}
 			if (any.move == 2)//오른쪽거
 			{
-				for (int i = 0; i < 10; i++)
+
+				if (up_tr[0].active == 1 && x > up_tr[0].x - 25 && x < up_tr[0].x + 25 && y > up_tr[0].y - 25 && y < up_tr[0].y + 25)
 				{
-					if (up_tr[i].active == 1 && x > up_tr[i].x - 25 && x < up_tr[i].x + 25 && y > up_tr[i].y - 25 && y < up_tr[i].y + 25)
+					star[any.star_count].x = up_tr[0].x;
+					star[any.star_count].y = up_tr[0].y;
+					up_tr[0].active = 0;
+					semo[1].active = 0;
+					semo[1].y = 800;
+					star[any.star_count].active = 1;
+					star[any.star_count].move_count = 50;
+					star[any.star_count].move_x = (rand() % 700 + 50 - star[any.star_count].x) / 50;
+					star[any.star_count].move_y = (rand() % 300 + 150 - star[any.star_count].y) / 50;
+					any.star_count++;
+					//i = 10;
+
+					if (semo[0].active == 0 && semo[1].active == 0)
 					{
-						star[any.star_count].x = up_tr[i].x;
-						star[any.star_count].y = up_tr[i].y;
-						up_tr[i].active = 0;
-						semo[1].active = 0;
-						semo[1].y = 800;
-						star[any.star_count].active = 1;
-						star[any.star_count].move_count = 50;
-						star[any.star_count].move_x = (rand() % 700 + 50 - star[any.star_count].x) / 50;
-						star[any.star_count].move_y = (rand() % 300 + 150 - star[any.star_count].y) / 50;
-						any.star_count++;
-						i = 10;
+						nemo.active = 1;
+						nemo.y = 600;
 
-						if (semo[0].active == 0 && semo[1].active == 0)
-						{
-							nemo.active = 1;
-							nemo.y = 600;
-
-							int ch = rand() % 2;
-							if (ch == 1)
-								nemo.ro = 0;
-							else
-								nemo.ro = 45;
-						}
+						int ch = rand() % 2;
+						if (ch == 1)
+							nemo.ro = 0;
+						else
+							nemo.ro = 45;
 					}
 				}
+
 			}
 			any.move = 0;
 		}
@@ -809,19 +805,18 @@ void Motion(int x, int y)
 void main(int argc, char* argv[])
 {
 	PlaySound("inGame.wav", NULL, SND_ASYNC | SND_LOOP);
-	
+
 	srand(time(NULL));
-	for (int i = 0; i < 1; i++)
-	{
-		//up_tr[i].x = i * 85;
-		up_tr[i].ro = i * 36;
-		up_tr[i].y = 550;
-	}
+
+	//up_tr[i].x = i * 85;
+	up_tr[0].ro = 0 * 36;
+	up_tr[0].y = 550;
+
 	nemo.x = 400;
 	nemo.y = 600;
 	semo[0].active = 0;
 	semo[1].active = 0;
-	for (int i = 0; i < 100; i++)
+	for (int i{}; i < 100; ++i)
 		star[i].active = 0;
 
 	glutInit(&argc, argv);
@@ -870,7 +865,7 @@ GLvoid drawScene(GLvoid)
 
 		glShadeModel(GL_FLAT);
 
-		for (int i = 0; i < 10; i++)//파티클
+		for (int i{}; i < 10; ++i)//파티클
 		{
 			if (light[i].alpha > 0)
 			{
@@ -971,40 +966,40 @@ GLvoid drawScene(GLvoid)
 			glPopMatrix();
 		}
 
-		for (int i{}; i < 1; ++i)//위에 지나가는 삼각형
+		//위에 지나가는 삼각형
+
+		glColor3ub(255, 255, any.shine);
+		if (up_tr[0].active == 1)
 		{
-			glColor3ub(255, 255, any.shine);
-			if (up_tr[i].active == 1)
+			glPushMatrix();
 			{
-				glPushMatrix();
-				{
-					glTranslatef(up_tr[i].x, up_tr[i].y, 0.0);
-					//glRotatef(up_tr[i].ro, 0.0, 0.0, 1.0);
+				glTranslatef(up_tr[0].x, up_tr[0].y, 0.0);
+				//glRotatef(up_tr[i].ro, 0.0, 0.0, 1.0);
 
-					/*glBegin(GL_POLYGON);
-					glVertex2f(0, 0 - 25);
-					glVertex2f(0 - 25, 0 + 25);
-					glVertex2f(0 + 25, 0 + 25);
-					glEnd();*/
+				/*glBegin(GL_POLYGON);
+				glVertex2f(0, 0 - 25);
+				glVertex2f(0 - 25, 0 + 25);
+				glVertex2f(0 + 25, 0 + 25);
+				glEnd();*/
 
-					glBegin(GL_POLYGON);
-					glColor3ub(150, 150, 150);
-					glVertex2f(-75, -25);
-					glVertex2f(-75, +25);
-					glVertex2f(+75, +25);
-					glVertex2f(+75, -25);
-					glEnd();
-				}
-				glPopMatrix();
+				glBegin(GL_POLYGON);
+				glColor3ub(150, 150, 150);
+				glVertex2f(-75, -25);
+				glVertex2f(-75, +25);
+				glVertex2f(+75, +25);
+				glVertex2f(+75, -25);
+				glEnd();
 			}
+			glPopMatrix();
 		}
+
 
 		glPushMatrix();//네모그리기
 		{
 			glColor3ub(255, 255, any.shine);
 			if (nemo.active == 1)
 			{
-				if (nemo.y > 130)
+				//if (nemo.y > 130)
 				{
 					glTranslatef(nemo.x, nemo.y, 0.0);
 					glRotatef(nemo.ro, 0, 0, 1);
@@ -1015,22 +1010,22 @@ GLvoid drawScene(GLvoid)
 					glVertex2f(+25, -25);
 					glEnd();
 				}
-				else
-				{
-					glTranslatef(nemo.x, nemo.y, 0.0);
-					glRotatef(nemo.ro, 0, 0, 1);
-					glBegin(GL_LINES);
-					//glBegin(GL_POLYGON);
-					glVertex2f(-25, -25);
-					glVertex2f(-25, +25);
-					glVertex2f(-25, +25);
-					glVertex2f(+25, +25);
-					glVertex2f(+25, +25);
-					glVertex2f(+25, -25);
-					glVertex2f(+25, -25);
-					glVertex2f(-25, -25);
-					glEnd();
-				}
+				//else
+				//{
+				//	glTranslatef(nemo.x, nemo.y, 0.0);
+				//	glRotatef(nemo.ro, 0, 0, 1);
+				//	glBegin(GL_LINES);
+				//	//glBegin(GL_POLYGON);
+				//	glVertex2f(-25, -25);
+				//	glVertex2f(-25, +25);
+				//	glVertex2f(-25, +25);
+				//	glVertex2f(+25, +25);
+				//	glVertex2f(+25, +25);
+				//	glVertex2f(+25, -25);
+				//	glVertex2f(+25, -25);
+				//	glVertex2f(-25, -25);
+				//	glEnd();
+				//}
 			}
 		}
 		glPopMatrix();
@@ -1194,58 +1189,58 @@ GLvoid Reshape(int w, int h)
 }
 GLvoid KeyBoard(unsigned char key, int x, int y)
 {
-    switch (key)
-    {
-    case 'o'://직각투영
-       // projection_Flag = false;
-        break;
-    case 'p'://원근 투영
-        //projection_Flag = true;
-        break;
-    case 'z'://카메라 z축이동
-       // if (projection_Flag)cameraZ += 0.1f;
-        break;
-    case 'Z'://카메라 z축이동
-     //   if (projection_Flag)cameraZ -= 0.1f;
-        break;
-    case 'y'://카메라 음의 방향 회전
-       // y_Angle--;
-        break;
-    case 'Y':
-       // y_Angle++;
-        break;
-    case 'm':
-    case 'M'://미로 위아래
-        //m_Flag = !m_Flag;
-        break;
-    case 'v':
-    case 'V':
-        //v_Flag = !v_Flag;
-        break;
-    case 'r':
-    case 'R':
-        //make_Maze();
-        break;
-    case 's':
-    case 'S':
-        //s_Flag = true;
-        break;
-    case '=':
- 
-    case '_':
-        //global_Speed -= 0.1f;
-        break;
-    case 'c'://모든 값 초기화
-        //clear();
-        break;
-    case '1':
-        //third_View = false;
-        break;
-    case '3':
-        //third_View = true;
+	switch (key)
+	{
+	case 'o'://직각투영
+		// projection_Flag = false;
+		break;
+	case 'p'://원근 투영
+		//projection_Flag = true;
+		break;
+	case 'z'://카메라 z축이동
+		// if (projection_Flag)cameraZ += 0.1f;
+		break;
+	case 'Z'://카메라 z축이동
+		//   if (projection_Flag)cameraZ -= 0.1f;
+		break;
+	case 'y'://카메라 음의 방향 회전
+		// y_Angle--;
+		break;
+	case 'Y':
+		// y_Angle++;
+		break;
+	case 'm':
+	case 'M'://미로 위아래
+		//m_Flag = !m_Flag;
+		break;
+	case 'v':
+	case 'V':
+		//v_Flag = !v_Flag;
+		break;
+	case 'r':
+	case 'R':
+		//make_Maze();
+		break;
+	case 's':
+	case 'S':
+		//s_Flag = true;
+		break;
+	case '=':
+
+	case '_':
+		//global_Speed -= 0.1f;
+		break;
+	case 'c'://모든 값 초기화
+		//clear();
+		break;
+	case '1':
+		//third_View = false;
+		break;
+	case '3':
+		//third_View = true;
 
 
-        break;
+		break;
 	case 'l':
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		break;
@@ -1259,10 +1254,10 @@ GLvoid KeyBoard(unsigned char key, int x, int y)
 	case '-':
 		speed *= 1.5f;
 		break;
-    case 'q':
-        exit(-1);
-    default:
-        break;
-    }
-    glutPostRedisplay();
+	case 'q':
+		exit(-1);
+	default:
+		break;
+	}
+	glutPostRedisplay();
 }
