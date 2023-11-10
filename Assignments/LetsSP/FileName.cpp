@@ -970,12 +970,20 @@ GLvoid drawScene(GLvoid)
 				glPushMatrix();
 				{
 					glTranslatef(up_tr[i].x, up_tr[i].y, 0.0);
-					glRotatef(up_tr[i].ro, 0.0, 0.0, 1.0);
+					//glRotatef(up_tr[i].ro, 0.0, 0.0, 1.0);
 
-					glBegin(GL_POLYGON);
+					/*glBegin(GL_POLYGON);
 					glVertex2f(0, 0 - 25);
 					glVertex2f(0 - 25, 0 + 25);
 					glVertex2f(0 + 25, 0 + 25);
+					glEnd();*/
+
+					glBegin(GL_POLYGON);
+					glColor3ub(150, 150, 150);
+					glVertex2f(-75, -25);
+					glVertex2f(-75, +25);
+					glVertex2f(+75, +25);
+					glVertex2f(+75, -25);
 					glEnd();
 				}
 				glPopMatrix();
