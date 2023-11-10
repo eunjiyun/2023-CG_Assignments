@@ -853,14 +853,24 @@ GLvoid drawScene(GLvoid)
 		glShadeModel(GL_SMOOTH);//배경그리기
 
 		glBegin(GL_POLYGON);
+
+
 		glColor3ub(50, 50, 50);
 		glVertex2f(0, 0);
+
+
 		glColor3ub(50, 50, 50);
 		glVertex2f(800, 0);
-		glColor3ub(0, 0, 0);
+
+
+		glColor3ub(127, 153, 248);
 		glVertex2f(800, 600);
-		glColor3ub(0, 0, 0);
+
+
+		glColor3ub(127, 153, 248);
 		glVertex2f(0, 600);
+
+
 		glEnd();
 
 		glShadeModel(GL_FLAT);
@@ -871,7 +881,7 @@ GLvoid drawScene(GLvoid)
 			{
 				glPushMatrix();
 				{
-					glColor4f(1.0, 1.0, 0.4, light[i].alpha);
+					glColor4f(1.0, 0.0, 0.0, light[i].alpha);
 					glTranslated(light[i].x, light[i].y, 0);
 					glBegin(GL_POLYGON);
 					glVertex2f(-2, -2);
@@ -938,7 +948,7 @@ GLvoid drawScene(GLvoid)
 				glEnd();*/
 
 				glBegin(GL_POLYGON);
-				glColor3ub(150, 150, 150);
+				glColor3ub(0, 255, 0);
 				glVertex2f(-75, -25);
 				glVertex2f(-75, +25);
 				glVertex2f(+75, +25);
@@ -951,7 +961,7 @@ GLvoid drawScene(GLvoid)
 
 		glPushMatrix();//네모그리기
 		{
-			glColor3ub(255, 255, any.shine);
+			glColor3ub(255, 0, 0/*any.shine*/);
 			if (nemo.active == 1)
 			{
 				//if (nemo.y > 130)
@@ -982,7 +992,7 @@ GLvoid drawScene(GLvoid)
 
 		if (nemo.active == 0)//새세모그리기!!
 		{
-			glColor3ub(255, 255, any.shine);
+			glColor3ub(255, 0, 0/*any.shine*/);
 			if (any.semo_you == 1)//왼쪽 위 자름
 			{
 				if (semo[0].move_count != 100)
@@ -1119,7 +1129,7 @@ GLvoid drawScene(GLvoid)
 
 		if (any.cut_active == 1)
 		{
-			glColor3ub(255, 255, 0);
+			glColor3ub(255, 0, 0);
 			glBegin(GL_LINES);
 			//glBegin(GL_POLYGON);
 			glVertex2f(any.cut_x[0], any.cut_y[0]);
