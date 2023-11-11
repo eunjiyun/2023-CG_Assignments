@@ -17,7 +17,7 @@ public:
 	int shape;
 };
 
-class Baskets
+class Slices
 {
 public:
 	float x = -100;

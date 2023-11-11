@@ -23,9 +23,9 @@ uniform_int_distribution<int> dist700(0, 699);
 uniform_int_distribution<int> dist300(0, 299);
 uniform_int_distribution<int> dist3(0, 2);
 
-Fruits up_tr[1];
+Fruits baskets[1];
 Fruits nemo;
-Baskets semo[2];
+Slices semo[2];
 Any any;
 Floor block[3][16];
 Light light[10];
@@ -36,8 +36,8 @@ GLvoid main(int argc, char* argv[])
 {
 	PlaySound("inGame.wav", NULL, SND_ASYNC | SND_LOOP);
 
-	up_tr[0].ro = 0;
-	up_tr[0].y = 550;
+	baskets[0].ro = 0;
+	baskets[0].y = 550;
 
 	nemo.x = 400;
 	nemo.y = 600;
@@ -123,11 +123,11 @@ GLvoid drawScene(GLvoid)
 		//위에 지나가는 삼각형
 
 		glColor3ub(255, 255, any.shine);
-		if (up_tr[0].active == 1)
+		if (baskets[0].active == 1)
 		{
 			glPushMatrix();
 			{
-				glTranslatef(up_tr[0].x, up_tr[0].y, 0.0);
+				glTranslatef(baskets[0].x, baskets[0].y, 0.0);
 				
 				glBegin(GL_POLYGON);
 				glColor3ub(0, 255, 0);
@@ -361,23 +361,23 @@ GLvoid Timer(int value)
 	}
 
 
-	if (up_tr[0].x > 825)
+	if (825<baskets[0].x  )
 		direction = true;
-	else if (0 > up_tr[0].x)
+	else if (0 > baskets[0].x)
 		direction = false;
 
 	if (!direction)
-		up_tr[0].x += 5;
+		baskets[0].x += 5;
 	else
-		up_tr[0].x -= 5;
+		baskets[0].x -= 5;
 
 
-	if (up_tr[0].ro < 357)
-		up_tr[0].ro += 2;
+	if (baskets[0].ro < 357)
+		baskets[0].ro += 2;
 	else
 	{
 		//up_tr[i].ro -= 2;
-		up_tr[0].ro = 0;
+		baskets[0].ro = 0;
 	}
 
 
@@ -394,6 +394,19 @@ GLvoid Timer(int value)
 	}
 	else
 	{
+		for (int b{}; b < 2; ++b)
+		{// 두 객체의 충돌 여부 확인
+			if (baskets[0].x - 35 < semo[b].x + 35 && baskets[0].x + 35 > semo[b].x - 35 &&
+				baskets[0].y - 35 < semo[b].y + 35 && baskets[0].y + 35 > semo[b].y - 35)
+			{
+				
+					semo[b].active = 0;
+			}
+		}
+
+		if (0 == semo[0].active && 0 == semo[1].active&&0== nemo.active)
+			nemo.active = 1;
+		
 		// 좌에서 우로 이동하는 코드 추가
 		nemo.x += 3;
 		// 화면 오른쪽 끝을 벗어나면 화면 왼쪽 끝으로 초기화
@@ -467,8 +480,7 @@ GLvoid Timer(int value)
 			{
 				nemo.active = 1;
 				nemo.y = 600;
-				//nemo.x = 0;
-
+				
 				int ch = dist(gen);
 				if (ch == 1)
 					nemo.ro = 0;
@@ -908,7 +920,7 @@ GLvoid Mouse(int button, int state, int x, int y)
 			if (any.move == 1)//왼쪽거
 			{
 
-				if (up_tr[0].active == 1 && x > up_tr[0].x - 25 && x < up_tr[0].x + 25 && y > up_tr[0].y - 25 && y < up_tr[0].y + 25)
+				if (baskets[0].active == 1 && x > baskets[0].x - 25 && x < baskets[0].x + 25 && y > baskets[0].y - 25 && y < baskets[0].y + 25)
 				{
 
 
@@ -929,7 +941,7 @@ GLvoid Mouse(int button, int state, int x, int y)
 			if (any.move == 2)//오른쪽거
 			{
 
-				if (up_tr[0].active == 1 && x > up_tr[0].x - 25 && x < up_tr[0].x + 25 && y > up_tr[0].y - 25 && y < up_tr[0].y + 25)
+				if (baskets[0].active == 1 && x > baskets[0].x - 25 && x < baskets[0].x + 25 && y > baskets[0].y - 25 && y < baskets[0].y + 25)
 				{
 
 
