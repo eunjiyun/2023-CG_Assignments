@@ -42,7 +42,7 @@ public:
 	int active = 0;//0비어있음 1하나차있음 2꽉차있음오지마셈
 };
 
-class Light
+class Particles
 {
 public:
 	float x = 0;
@@ -52,7 +52,7 @@ public:
 	float alpha = 0;
 };
 
-class Any
+class Cutter
 {
 public:
 	float cut_x[2];
@@ -64,8 +64,8 @@ public:
 
 	int semo_you = 0;//1왼쪽에서 짜름 2오른쪽에서 짜름 3가로짜름 4세로짜름
 
-	int star_count = 0;//몇번째 별
-	int star_color[3];
+	//int star_count = 0;//몇번째 별
+	//int star_color[3];
 
 	int move_x[2];
 	int move_y[2];

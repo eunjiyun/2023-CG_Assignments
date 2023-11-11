@@ -22,13 +22,14 @@ uniform_int_distribution<int> dist16(0, 15);
 uniform_int_distribution<int> dist700(0, 699);
 uniform_int_distribution<int> dist300(0, 299);
 uniform_int_distribution<int> dist3(0, 2);
+uniform_int_distribution<int> dist600(100, 500);
 
-Fruits baskets[1];
-Fruits nemo;
-Slices semo[2];
-Any any;
-Floor block[3][16];
-Light light[10];
+Fruits baskets;
+Fruits fruit;
+Slices slice[2];
+Cutter cutter;
+Floor ground[3][16];
+Particles particle[10];
 int speed{ 20 };
 bool direction{ false };
 
@@ -36,13 +37,13 @@ GLvoid main(int argc, char* argv[])
 {
 	PlaySound("inGame.wav", NULL, SND_ASYNC | SND_LOOP);
 
-	baskets[0].ro = 0;
-	baskets[0].y = 550;
+	baskets.ro = 0;
+	baskets.y = 550;
 
-	nemo.x = 400;
-	nemo.y = 600;
-	semo[0].active = 0;
-	semo[1].active = 0;
+	fruit.x = 400;
+	fruit.y = 600;
+	slice[0].active = 0;
+	slice[1].active = 0;
 
 
 	glutInit(&argc, argv);
@@ -68,12 +69,12 @@ GLvoid drawScene(GLvoid)
 
 	glPushMatrix();
 	{
-		if (any.shack != 0)//화면흔들림
+		if (cutter.shack != 0)//화면흔들림
 		{
-			if (any.shack > 10)
-				glTranslatef((any.shack - 20) * 2, (any.shack - 20) * 2, 0.0);
+			if (cutter.shack > 10)
+				glTranslatef((cutter.shack - 20) * 2, (cutter.shack - 20) * 2, 0.0);
 			else
-				glTranslatef((any.shack) * -2, (any.shack) * -2, 0.0);
+				glTranslatef((cutter.shack) * -2, (cutter.shack) * -2, 0.0);
 		}
 
 		glShadeModel(GL_SMOOTH);//배경그리기
@@ -103,12 +104,12 @@ GLvoid drawScene(GLvoid)
 
 		for (int i{}; i < 10; ++i)//파티클
 		{
-			if (light[i].alpha > 0)
+			if (particle[i].alpha > 0)
 			{
 				glPushMatrix();
 				{
-					glColor4f(1.0, 0.0, 0.0, light[i].alpha);
-					glTranslated(light[i].x, light[i].y, 0);
+					glColor4f(1.0, 0.0, 0.0, particle[i].alpha);
+					glTranslated(particle[i].x, particle[i].y, 0);
 					glBegin(GL_POLYGON);
 					glVertex2f(-2, -2);
 					glVertex2f(2, -2);
@@ -122,13 +123,13 @@ GLvoid drawScene(GLvoid)
 
 		//위에 지나가는 삼각형
 
-		glColor3ub(255, 255, any.shine);
-		if (baskets[0].active == 1)
+		glColor3ub(255, 255, cutter.shine);
+		if (baskets.active == 1)
 		{
 			glPushMatrix();
 			{
-				glTranslatef(baskets[0].x, baskets[0].y, 0.0);
-				
+				glTranslatef(baskets.x, baskets.y, 0.0);
+
 				glBegin(GL_POLYGON);
 				glColor3ub(0, 255, 0);
 				glVertex2f(-120, -25);
@@ -144,27 +145,27 @@ GLvoid drawScene(GLvoid)
 		glPushMatrix();//네모그리기
 		{
 			glColor3ub(255, 0, 0/*any.shine*/);
-			if (nemo.active == 1)
+			if (fruit.active == 1)
 			{
 
-				glTranslatef(nemo.x, nemo.y, 0.0);
-				glRotatef(nemo.ro, 0, 0, 1);
+				glTranslatef(fruit.x, fruit.y, 0.0);
+				glRotatef(fruit.ro, 0, 0, 1);
 				glBegin(GL_POLYGON);
 
-				if (0 == nemo.shape)
+				if (0 == fruit.shape)
 				{
 					glVertex2f(-50, -50);
 					glVertex2f(-50, +50);
 					glVertex2f(+50, +50);
 					glVertex2f(+50, -50);
 				}
-				else if(1== nemo.shape)
+				else if (1 == fruit.shape)
 				{
 					glVertex2f(-50, -50);
 					glVertex2f(50, 50);
 					glVertex2f(-50, 50);
 				}
-				else if (2 == nemo.shape)
+				else if (2 == fruit.shape)
 				{
 					for (int i{}; i < 5; ++i)
 					{
@@ -181,17 +182,17 @@ GLvoid drawScene(GLvoid)
 		}
 		glPopMatrix();
 
-		if (nemo.active == 0)//새세모그리기!!
+		if (fruit.active == 0)//새세모그리기!!
 		{
 			glColor3ub(255, 0, 0/*any.shine*/);
-			if (any.semo_you == 1)//왼쪽 위 자름
+			if (cutter.semo_you == 1)//왼쪽 위 자름
 			{
-				if (semo[0].move_count != 100)
+				if (slice[0].move_count != 100)
 				{
 					glPushMatrix();
 					{
-						glTranslatef(semo[0].x, semo[0].y, 0.0);
-						glRotatef(semo[0].turn * semo[0].move_count, 0, 0, 1);
+						glTranslatef(slice[0].x, slice[0].y, 0.0);
+						glRotatef(slice[0].turn * slice[0].move_count, 0, 0, 1);
 						glBegin(GL_POLYGON);
 						glVertex2f(-50, -50);
 						glVertex2f(50, 50);
@@ -201,12 +202,12 @@ GLvoid drawScene(GLvoid)
 					glPopMatrix();
 				}
 
-				if (semo[1].move_count != 100)
+				if (slice[1].move_count != 100)
 				{
 					glPushMatrix();
 					{
-						glTranslatef(semo[1].x, semo[1].y, 0.0);
-						glRotatef(semo[1].turn * semo[1].move_count, 0, 0, 1);
+						glTranslatef(slice[1].x, slice[1].y, 0.0);
+						glRotatef(slice[1].turn * slice[1].move_count, 0, 0, 1);
 						glBegin(GL_POLYGON);
 						glVertex2f(50, -50);
 						glVertex2f(-50, -50);
@@ -216,14 +217,14 @@ GLvoid drawScene(GLvoid)
 					glPopMatrix();
 				}
 			}
-			else if (any.semo_you == 2)//오른쪽 위 자름
+			else if (cutter.semo_you == 2)//오른쪽 위 자름
 			{
-				if (semo[0].move_count != 100)
+				if (slice[0].move_count != 100)
 				{
 					glPushMatrix();
 					{
-						glTranslatef(semo[0].x, semo[0].y, 0.0);
-						glRotatef(semo[0].turn * semo[0].move_count, 0, 0, 1);
+						glTranslatef(slice[0].x, slice[0].y, 0.0);
+						glRotatef(slice[0].turn * slice[0].move_count, 0, 0, 1);
 						glBegin(GL_POLYGON);
 						glVertex2f(-50, -50);
 						glVertex2f(50, -50);
@@ -233,12 +234,12 @@ GLvoid drawScene(GLvoid)
 					glPopMatrix();
 				}
 
-				if (semo[1].move_count != 100)
+				if (slice[1].move_count != 100)
 				{
 					glPushMatrix();
 					{
-						glTranslatef(semo[1].x, semo[1].y, 0.0);
-						glRotatef(semo[1].turn * semo[1].move_count, 0, 0, 1);
+						glTranslatef(slice[1].x, slice[1].y, 0.0);
+						glRotatef(slice[1].turn * slice[1].move_count, 0, 0, 1);
 						glBegin(GL_POLYGON);
 						glVertex2f(50, -50);
 						glVertex2f(-50, 50);
@@ -248,14 +249,14 @@ GLvoid drawScene(GLvoid)
 					glPopMatrix();
 				}
 			}
-			else if (any.semo_you == 3)//가로 자름
+			else if (cutter.semo_you == 3)//가로 자름
 			{
-				if (semo[0].move_count != 100)
+				if (slice[0].move_count != 100)
 				{
 					glPushMatrix();
 					{
-						glTranslatef(semo[0].x, semo[0].y, 0.0);
-						glRotatef(semo[0].turn * semo[0].move_count, 0, 0, 1);
+						glTranslatef(slice[0].x, slice[0].y, 0.0);
+						glRotatef(slice[0].turn * slice[0].move_count, 0, 0, 1);
 						glRotatef(45, 0, 0, 1);
 						glBegin(GL_POLYGON);
 						glVertex2f(-50, -50);
@@ -266,12 +267,12 @@ GLvoid drawScene(GLvoid)
 					glPopMatrix();
 				}
 
-				if (semo[1].move_count != 100)
+				if (slice[1].move_count != 100)
 				{
 					glPushMatrix();
 					{
-						glTranslatef(semo[1].x, semo[1].y, 0.0);
-						glRotatef(semo[1].turn * semo[1].move_count, 0, 0, 1);
+						glTranslatef(slice[1].x, slice[1].y, 0.0);
+						glRotatef(slice[1].turn * slice[1].move_count, 0, 0, 1);
 						glRotatef(45, 0, 0, 1);
 						glBegin(GL_POLYGON);
 						glVertex2f(50, -50);
@@ -282,14 +283,14 @@ GLvoid drawScene(GLvoid)
 					glPopMatrix();
 				}
 			}
-			else if (any.semo_you == 4)//세로 자름
+			else if (cutter.semo_you == 4)//세로 자름
 			{
-				if (semo[0].move_count != 100)
+				if (slice[0].move_count != 100)
 				{
 					glPushMatrix();
 					{
-						glTranslatef(semo[0].x, semo[0].y, 0.0);
-						glRotatef(semo[0].turn * semo[0].move_count, 0, 0, 1);
+						glTranslatef(slice[0].x, slice[0].y, 0.0);
+						glRotatef(slice[0].turn * slice[0].move_count, 0, 0, 1);
 						glRotatef(-45, 0, 0, 1);
 						glBegin(GL_POLYGON);
 						glVertex2f(-50, -50);
@@ -300,12 +301,12 @@ GLvoid drawScene(GLvoid)
 					glPopMatrix();
 				}
 
-				if (semo[1].move_count != 100)
+				if (slice[1].move_count != 100)
 				{
 					glPushMatrix();
 					{
-						glTranslatef(semo[1].x, semo[1].y, 0.0);
-						glRotatef(semo[1].turn * semo[1].move_count, 0, 0, 1);
+						glTranslatef(slice[1].x, slice[1].y, 0.0);
+						glRotatef(slice[1].turn * slice[1].move_count, 0, 0, 1);
 						glRotatef(-45, 0, 0, 1);
 						glBegin(GL_POLYGON);
 						glVertex2f(50, -50);
@@ -318,13 +319,13 @@ GLvoid drawScene(GLvoid)
 			}
 		}
 
-		if (any.cut_active == 1)
+		if (cutter.cut_active == 1)
 		{
 			glColor3ub(255, 0, 0);
 			glBegin(GL_LINES);
 			//glBegin(GL_POLYGON);
-			glVertex2f(any.cut_x[0], any.cut_y[0]);
-			glVertex2f(any.cut_x[1], any.cut_y[1]);
+			glVertex2f(cutter.cut_x[0], cutter.cut_y[0]);
+			glVertex2f(cutter.cut_x[1], cutter.cut_y[1]);
 			glEnd();
 		}
 
@@ -336,156 +337,160 @@ GLvoid Timer(int value)
 {
 	for (int i{}; i < 10; ++i)
 	{
-		if (light[i].alpha > 0)
+		if (particle[i].alpha > 0)
 		{
-			light[i].alpha -= 0.01;
-			light[i].gravity += 0.15;
-			light[i].x += light[i].speed;
-			light[i].y += light[i].gravity;
+			particle[i].alpha -= 0.01;
+			particle[i].gravity += 0.15;
+			particle[i].x += particle[i].speed;
+			particle[i].y += particle[i].gravity;
 		}
 	}
 
-	if (any.shine_sw == 0)
+	if (cutter.shine_sw == 0)
 	{
-		if (any.shine < 180)
-			any.shine++;
+		if (cutter.shine < 180)
+			cutter.shine++;
 		else
-			any.shine_sw = 1;
+			cutter.shine_sw = 1;
 	}
-	else if (any.shine_sw == 1)
+	else if (cutter.shine_sw == 1)
 	{
-		if (any.shine > 120)
-			any.shine--;
+		if (cutter.shine > 120)
+			cutter.shine--;
 		else
-			any.shine_sw = 0;
+			cutter.shine_sw = 0;
 	}
 
 
-	if (825<baskets[0].x  )
+	if (825 < baskets.x)
 		direction = true;
-	else if (0 > baskets[0].x)
+	else if (0 > baskets.x)
 		direction = false;
 
 	if (!direction)
-		baskets[0].x += 5;
+		baskets.x += 5;
 	else
-		baskets[0].x -= 5;
+		baskets.x -= 5;
 
 
-	if (baskets[0].ro < 357)
-		baskets[0].ro += 2;
+	if (baskets.ro < 357)
+		baskets.ro += 2;
 	else
 	{
-		//up_tr[i].ro -= 2;
-		baskets[0].ro = 0;
+		baskets.ro = 0;
 	}
 
 
-	if (nemo.active == 1 && nemo.y < -50)
+	if (fruit.active == 1 && fruit.y < -50)
 	{
-		nemo.y = 600;
+		fruit.y = 600;
 		int ch = dist(gen);
 		if (ch == 1)
-			nemo.ro = 0;
+			fruit.ro = 0;
 		else
-			nemo.ro = 45;
+			fruit.ro = 45;
 
-		nemo.shape = dist3(gen);
+		fruit.shape = dist3(gen);
 	}
 	else
 	{
 		for (int b{}; b < 2; ++b)
 		{// 두 객체의 충돌 여부 확인
-			if (baskets[0].x - 35 < semo[b].x + 35 && baskets[0].x + 35 > semo[b].x - 35 &&
-				baskets[0].y - 35 < semo[b].y + 35 && baskets[0].y + 35 > semo[b].y - 35)
+			if (baskets.x - 35 < slice[b].x + 35 && baskets.x + 35 > slice[b].x - 35 &&
+				baskets.y - 35 < slice[b].y + 35 && baskets.y + 35 > slice[b].y - 35)
 			{
-				
-					semo[b].active = 0;
+
+				slice[b].active = 0;
 			}
 		}
 
-		if (0 == semo[0].active && 0 == semo[1].active&&0== nemo.active)
-			nemo.active = 1;
-		
-		// 좌에서 우로 이동하는 코드 추가
-		nemo.x += 3;
-		// 화면 오른쪽 끝을 벗어나면 화면 왼쪽 끝으로 초기화
-		if (nemo.x > 825)
+		if (0 == slice[0].active && 0 == slice[1].active && 0 == fruit.active)
 		{
-			nemo.x = -25;
+			fruit.active = 1;
+			fruit.x = 0;
+		}
+
+		// 좌에서 우로 이동하는 코드 추가
+		fruit.x += 3;
+		// 화면 오른쪽 끝을 벗어나면 화면 왼쪽 끝으로 초기화
+		if (fruit.x > 825)
+		{
+			fruit.x = -25;
 			int ch = dist(gen);
 			if (ch == 1)
-				nemo.ro = 0;
+				fruit.ro = 0;
 			else
-				nemo.ro = 45;
+				fruit.ro = 45;
 		}
 		// y 좌표는 그대로 유지
-		nemo.y -= 3;
+		fruit.y -= 1;
 	}
 
-	if (any.shack > 0)
-		any.shack--;
+	if (cutter.shack > 0)
+		cutter.shack--;
 
-	for (int i{}; i < 3; ++i)
+	/*for (int i{}; i < 3; ++i)
 	{
-		if (any.star_color[i] >= 255)
-			any.star_color[i] = 0;
+		if (cutter.star_color[i] >= 255)
+			cutter.star_color[i] = 0;
 		else
-			any.star_color[i] += 5;
-	}
+			cutter.star_color[i] += 5;
+	}*/
 
 
 
 	for (int i{}; i < 2; ++i)
 	{
-		if (semo[i].move_count != 100 && semo[i].active == 1)
+		if (slice[i].move_count != 100 && slice[i].active == 1)
 		{
-			if (i == 0 && any.move != 1)
+			if (i == 0 && cutter.move != 1)
 			{
-				float set1_x = semo[i].now_x - ((semo[i].now_x - semo[i].point_x) / 100 * semo[i].move_count);
-				float set2_x = semo[i].point_x - ((semo[i].point_x - semo[i].move_x) / 100 * semo[i].move_count);
-				float set1_y = semo[i].now_y - ((semo[i].now_y - semo[i].point_y) / 100 * semo[i].move_count);
-				float set2_y = semo[i].point_y - ((semo[i].point_y - semo[i].move_y) / 100 * semo[i].move_count);
-				float new_x = set1_x - ((set1_x - set2_x) / 100 * semo[i].move_count);
-				float new_y = set1_y - ((set1_y - set2_y) / 100 * semo[i].move_count);
+				float set1_x = slice[i].now_x - ((slice[i].now_x - slice[i].point_x) / 100 * slice[i].move_count);
+				float set2_x = slice[i].point_x - ((slice[i].point_x - slice[i].move_x) / 100 * slice[i].move_count);
+				float set1_y = slice[i].now_y - ((slice[i].now_y - slice[i].point_y) / 100 * slice[i].move_count);
+				float set2_y = slice[i].point_y - ((slice[i].point_y - slice[i].move_y) / 100 * slice[i].move_count);
+				float new_x = set1_x - ((set1_x - set2_x) / 100 * slice[i].move_count);
+				float new_y = set1_y - ((set1_y - set2_y) / 100 * slice[i].move_count);
 
-				semo[i].x = new_x;
-				semo[i].y = new_y;
-				semo[i].move_count++;
+				slice[i].x = new_x;
+				slice[i].y = new_y;
+				slice[i].move_count++;
 			}
-			if (i == 1 && any.move != 2)
+			if (i == 1 && cutter.move != 2)
 			{
-				float set1_x = semo[i].now_x - ((semo[i].now_x - semo[i].point_x) / 100 * semo[i].move_count);
-				float set2_x = semo[i].point_x - ((semo[i].point_x - semo[i].move_x) / 100 * semo[i].move_count);
-				float set1_y = semo[i].now_y - ((semo[i].now_y - semo[i].point_y) / 100 * semo[i].move_count);
-				float set2_y = semo[i].point_y - ((semo[i].point_y - semo[i].move_y) / 100 * semo[i].move_count);
-				float new_x = set1_x - ((set1_x - set2_x) / 100 * semo[i].move_count);
-				float new_y = set1_y - ((set1_y - set2_y) / 100 * semo[i].move_count);
+				float set1_x = slice[i].now_x - ((slice[i].now_x - slice[i].point_x) / 100 * slice[i].move_count);
+				float set2_x = slice[i].point_x - ((slice[i].point_x - slice[i].move_x) / 100 * slice[i].move_count);
+				float set1_y = slice[i].now_y - ((slice[i].now_y - slice[i].point_y) / 100 * slice[i].move_count);
+				float set2_y = slice[i].point_y - ((slice[i].point_y - slice[i].move_y) / 100 * slice[i].move_count);
+				float new_x = set1_x - ((set1_x - set2_x) / 100 * slice[i].move_count);
+				float new_y = set1_y - ((set1_y - set2_y) / 100 * slice[i].move_count);
 
-				semo[i].x = new_x;
-				semo[i].y = new_y;
-				semo[i].move_count++;
+				slice[i].x = new_x;
+				slice[i].y = new_y;
+				slice[i].move_count++;
 			}
 		}
-		else if (semo[i].move_count == 100 && semo[i].active == 1)
+		else if (slice[i].move_count == 100 && slice[i].active == 1)
 		{
-			semo[i].active = 0;
-			int xx = (semo[i].move_x - 25) / 50;
-			int yy = -(semo[i].move_y - 575) / 50;
+			slice[i].active = 0;
+			int xx = (slice[i].move_x - 25) / 50;
+			int yy = -(slice[i].move_y - 575) / 50;
 
-			block[yy][xx].active++;
+			ground[yy][xx].active++;
 			cout << xx << " " << yy << endl;
 
-			if (semo[0].active == 0 && semo[1].active == 0)
+			if (slice[0].active == 0 && slice[1].active == 0)
 			{
-				nemo.active = 1;
-				nemo.y = 600;
-				
+				fruit.active = 1;
+				//nemo.y = 600;
+				fruit.y = dist600(gen);
+				fruit.x = 0;
+
 				int ch = dist(gen);
 				if (ch == 1)
-					nemo.ro = 0;
+					fruit.ro = 0;
 				else
-					nemo.ro = 45;
+					fruit.ro = 45;
 			}
 		}
 	}
@@ -498,87 +503,87 @@ GLvoid Mouse(int button, int state, int x, int y)
 {
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
 	{
-		if (nemo.active == 1)
+		if (fruit.active == 1)
 		{
-			any.cut_active = 1;
-			if (any.cut_active == 1)
+			cutter.cut_active = 1;
+			if (cutter.cut_active == 1)
 			{
-				any.cut_x[0] = x;
-				any.cut_y[0] = y;
-				any.cut_x[1] = x;
-				any.cut_y[1] = y;
+				cutter.cut_x[0] = x;
+				cutter.cut_y[0] = y;
+				cutter.cut_x[1] = x;
+				cutter.cut_y[1] = y;
 			}
 		}
 
-		if (semo[0].active == 1 && semo[0].x - 25 < x && semo[0].x + 25 > x && semo[0].y - 25 < y && semo[0].y + 25 > y)
+		if (slice[0].active == 1 && slice[0].x - 25 < x && slice[0].x + 25 > x && slice[0].y - 25 < y && slice[0].y + 25 > y)
 		{
-			any.move = 1;
-			semo[0].x = x;
-			semo[0].y = y;
+			cutter.move = 1;
+			slice[0].x = x;
+			slice[0].y = y;
 		}
-		if (semo[1].active == 1 && semo[1].x - 25 < x && semo[1].x + 25 > x && semo[1].y - 25 < y && semo[1].y + 25 > y)
+		if (slice[1].active == 1 && slice[1].x - 25 < x && slice[1].x + 25 > x && slice[1].y - 25 < y && slice[1].y + 25 > y)
 		{
-			any.move = 2;
-			semo[1].x = x;
-			semo[1].y = y;
+			cutter.move = 2;
+			slice[1].x = x;
+			slice[1].y = y;
 		}
 	}
 	else if ((button == GLUT_LEFT_BUTTON && state == GLUT_UP))
 	{
-		if (any.cut_active == 1)
+		if (cutter.cut_active == 1)
 		{
 			float left_x, right_x, left_y, right_y;
-			if (any.cut_x[0] < any.cut_x[1])
+			if (cutter.cut_x[0] < cutter.cut_x[1])
 			{
-				left_x = any.cut_x[0];
-				right_x = any.cut_x[1];
-				left_y = any.cut_y[0];
-				right_y = any.cut_y[1];
+				left_x = cutter.cut_x[0];
+				right_x = cutter.cut_x[1];
+				left_y = cutter.cut_y[0];
+				right_y = cutter.cut_y[1];
 			}
 			else
 			{
-				left_x = any.cut_x[1];
-				right_x = any.cut_x[0];
-				left_y = any.cut_y[1];
-				right_y = any.cut_y[0];
+				left_x = cutter.cut_x[1];
+				right_x = cutter.cut_x[0];
+				left_y = cutter.cut_y[1];
+				right_y = cutter.cut_y[0];
 			}
 
-			if (nemo.ro == 0 && nemo.y > 130)//네모 자름
+			if (fruit.ro == 0 && fruit.y > 130)//네모 자름
 			{
-				if (left_x < nemo.x && right_x > nemo.x + 50 && left_y < nemo.y && right_y > nemo.y + 50)//왼쪽 위 자름
+				if (left_x < fruit.x && right_x > fruit.x + 50 && left_y < fruit.y && right_y > fruit.y + 50)//왼쪽 위 자름
 				{
 					float far_x = abs(right_x - left_x);//선분x길이
 					float far_y = abs(right_y - left_y);//선분y길이
 
-					float check1_x = abs(nemo.x - 25 - left_x);//첫점까지x거리
+					float check1_x = abs(fruit.x - 25 - left_x);//첫점까지x거리
 					float be1_x = check1_x / far_x;//몇대 몇?
 					float line1_y = left_y + far_y * be1_x;
-					cout << "line1_y : " << line1_y << "     nemo.y - 25 : " << nemo.y - 25 << " /     " << abs(line1_y - (nemo.y - 25)) << endl;
+					cout << "line1_y : " << line1_y << "     nemo.y - 25 : " << fruit.y - 25 << " /     " << abs(line1_y - (fruit.y - 25)) << endl;
 
-					float check2_x = abs(nemo.x + 25 - left_x);//첫점까지x거리
+					float check2_x = abs(fruit.x + 25 - left_x);//첫점까지x거리
 					float be2_x = check2_x / far_x;//몇대 몇?
 					float line2_y = left_y + far_y * be2_x;
-					cout << "line2_y : " << line2_y << "     nemo.y + 25 : " << nemo.y + 25 << " /     " << abs(line2_y - (nemo.y + 25)) << endl;
+					cout << "line2_y : " << line2_y << "     nemo.y + 25 : " << fruit.y + 25 << " /     " << abs(line2_y - (fruit.y + 25)) << endl;
 
-					if (abs(line1_y - (nemo.y - 25)) < 20 && abs(line2_y - (nemo.y + 25)) < 20)
+					if (abs(line1_y - (fruit.y - 25)) < 20 && abs(line2_y - (fruit.y + 25)) < 20)
 					{
-						nemo.active = 0;
-						semo[0].active = 1;
-						semo[1].active = 1;
-						semo[0].x = nemo.x;
-						semo[1].x = nemo.x;
-						semo[0].y = nemo.y;
-						semo[1].y = nemo.y;
+						fruit.active = 0;
+						slice[0].active = 1;
+						slice[1].active = 1;
+						slice[0].x = fruit.x;
+						slice[1].x = fruit.x;
+						slice[0].y = fruit.y;
+						slice[1].y = fruit.y;
 
 						//파티클도 만들어 줘야지~!
 						for (int s{}; s < 10; ++s)
 						{
 							float rands = dist400(gen);
-							light[s].alpha = 1;
-							light[s].x = semo[0].x;
-							light[s].y = semo[0].y;
-							light[s].speed = -2 + rands / 100;
-							light[s].gravity = 0;
+							particle[s].alpha = 1;
+							particle[s].x = slice[0].x;
+							particle[s].y = slice[0].y;
+							particle[s].speed = -2 + rands / 100;
+							particle[s].gravity = 0;
 						}
 
 						//넌 어디로 날라갈레 삼각형아?
@@ -599,84 +604,84 @@ GLvoid Mouse(int button, int state, int x, int y)
 										break;
 									}
 								}
-								if (block[0][go_x].active != 2)
+								if (ground[0][go_x].active != 2)
 								{
 									go_y = 0;
 									pass = 0;
 								}
-								else if (block[1][go_x].active != 2)
+								else if (ground[1][go_x].active != 2)
 								{
 									go_y = 1;
 									pass = 0;
 								}
-								else if (block[2][go_x].active != 2)
+								else if (ground[2][go_x].active != 2)
 								{
 									go_y = 2;
 									pass = 0;
 								}
 							} while (pass);
 
-							semo[i].now_x = semo[i].x;
-							semo[i].now_y = semo[i].y;
+							slice[i].now_x = slice[i].x;
+							slice[i].now_y = slice[i].y;
 							if (i == 0)
-								semo[i].point_x = 0;
+								slice[i].point_x = 0;
 							else
-								semo[i].point_x = 800;
-							semo[i].point_y = semo[i].y;
-							semo[i].move_x = go_x * 50 + 25;
+								slice[i].point_x = 800;
+							slice[i].point_y = slice[i].y;
+							slice[i].move_x = go_x * 50 + 25;
 							//semo[i].move_y = 575 - go_y * 50;
-							semo[i].move_y = 650;
-							semo[i].move_count = 0;
+							slice[i].move_y = 650;
+							slice[i].move_count = 0;
 
-							if (i == 0 && block[go_y][go_x].active == 0)
-								semo[i].turn = -0.9;
-							else if (i == 0 && block[go_y][go_x].active == 1)
-								semo[i].turn = 0.9;
-							else if (i == 1 && block[go_y][go_x].active == 0)
-								semo[i].turn = 0.9;
-							else if (i == 1 && block[go_y][go_x].active == 1)
-								semo[i].turn = -0.9;
+							if (i == 0 && ground[go_y][go_x].active == 0)
+								slice[i].turn = -0.9;
+							else if (i == 0 && ground[go_y][go_x].active == 1)
+								slice[i].turn = 0.9;
+							else if (i == 1 && ground[go_y][go_x].active == 0)
+								slice[i].turn = 0.9;
+							else if (i == 1 && ground[go_y][go_x].active == 1)
+								slice[i].turn = -0.9;
 						}
 
-						any.shack = 20;
-						any.semo_you = 1;
+						cutter.shack = 20;
+						cutter.semo_you = 1;
 					}
 				}
 
-				else if (left_x < nemo.x && right_x > nemo.x + 50 && right_y < nemo.y && left_y > nemo.y + 50)//오른쪽 위 자름
+				else if (left_x < fruit.x && right_x > fruit.x + 50 && right_y < fruit.y && left_y > fruit.y + 50)//오른쪽 위 자름
 				{
 					float far_x = abs(right_x - left_x);//선분x길이
 					float far_y = abs(right_y - left_y);//선분y길이
 
-					float check1_x = abs(right_x - (nemo.x + 25));//첫점까지x거리
+					float check1_x = abs(right_x - (fruit.x + 25));//첫점까지x거리
 					float be1_x = check1_x / far_x;//몇대 몇?
 					float line1_y = right_y + far_y * be1_x;
-					cout << "line1_y : " << line1_y << "     nemo.y - 25 : " << nemo.y - 25 << " /     " << abs(line1_y - (nemo.y - 25)) << endl;
+					cout << "line1_y : " << line1_y << "     nemo.y - 25 : " << fruit.y - 25 << " /     " << abs(line1_y - (fruit.y - 25)) << endl;
 
-					float check2_x = abs(right_x - (nemo.x - 25));//첫점까지x거리
+					float check2_x = abs(right_x - (fruit.x - 25));//첫점까지x거리
 					float be2_x = check2_x / far_x;//몇대 몇?
 					float line2_y = right_y + far_y * be2_x;
-					cout << "line2_y : " << line2_y << "     nemo.y + 25 : " << nemo.y + 25 << " /     " << abs(line2_y - (nemo.y + 25)) << endl;
+					cout << "line2_y : " << line2_y << "     nemo.y + 25 : " << fruit.y + 25 << " /     " << abs(line2_y - (fruit.y + 25)) << endl;
 
-					if (abs(line1_y - (nemo.y - 25)) < 20 && abs(line2_y - (nemo.y + 25)) < 20)
+					if (abs(line1_y - (fruit.y - 25)) < 20 && abs(line2_y - (fruit.y + 25)) < 20)
 					{
-						nemo.active = 0;
-						semo[0].active = 1;
-						semo[1].active = 1;
-						semo[0].x = nemo.x;
-						semo[1].x = nemo.x;
-						semo[0].y = nemo.y;
-						semo[1].y = nemo.y;
+						fruit.active = 0;
+						slice[0].active = 1;
+						slice[1].active = 1;
+						slice[0].x = fruit.x;
+						slice[1].x = fruit.x;
+						slice[0].y = fruit.y;
+						slice[1].y = fruit.y;
 
 						//파티클도 만들어 줘야지~!
 						for (int s{}; s < 10; ++s)
 						{
 							float rands = dist400(gen);
-							light[s].alpha = 1;
-							light[s].x = semo[0].x;
-							light[s].y = semo[0].y;
-							light[s].speed = -2 + rands / 100;
-							light[s].gravity = 0;
+							particle[s].alpha = 1;
+							particle[s].x = slice[0].x;
+							particle[s].y = slice[0].y;
+							particle[s].speed = -2 + rands / 100;
+							particle[s].gravity = 0;
 						}
 
 						//넌 어디로 날라갈레 삼각형아?
@@ -697,73 +702,73 @@ GLvoid Mouse(int button, int state, int x, int y)
 										break;
 									}
 								}
-								if (block[0][go_x].active != 2)
+								if (ground[0][go_x].active != 2)
 								{
 									go_y = 0;
 									pass = 0;
 								}
-								else if (block[1][go_x].active != 2)
+								else if (ground[1][go_x].active != 2)
 								{
 									go_y = 1;
 									pass = 0;
 								}
-								else if (block[2][go_x].active != 2)
+								else if (ground[2][go_x].active != 2)
 								{
 									go_y = 2;
 									pass = 0;
 								}
 							} while (pass);
 
-							semo[i].now_x = semo[i].x;
-							semo[i].now_y = semo[i].y;
+							slice[i].now_x = slice[i].x;
+							slice[i].now_y = slice[i].y;
 							if (i == 0)
-								semo[i].point_x = 0;
+								slice[i].point_x = 0;
 							else
-								semo[i].point_x = 800;
-							semo[i].point_y = semo[i].y;
-							semo[i].move_x = go_x * 50 + 25;
+								slice[i].point_x = 800;
+							slice[i].point_y = slice[i].y;
+							slice[i].move_x = go_x * 50 + 25;
 							//semo[i].move_y = 575 - go_y * 50;
-							semo[i].move_y = 650;
-							semo[i].move_count = 0;
+							slice[i].move_y = 650;
+							slice[i].move_count = 0;
 
-							if (i == 0 && block[go_y][go_x].active == 0)
-								semo[i].turn = 1.8;
-							else if (i == 0 && block[go_y][go_x].active == 1)
-								semo[i].turn = 0;
-							else if (i == 1 && block[go_y][go_x].active == 0)
-								semo[i].turn = 0;
-							else if (i == 1 && block[go_y][go_x].active == 1)
-								semo[i].turn = 1.8;
+							if (i == 0 && ground[go_y][go_x].active == 0)
+								slice[i].turn = 1.8;
+							else if (i == 0 && ground[go_y][go_x].active == 1)
+								slice[i].turn = 0;
+							else if (i == 1 && ground[go_y][go_x].active == 0)
+								slice[i].turn = 0;
+							else if (i == 1 && ground[go_y][go_x].active == 1)
+								slice[i].turn = 1.8;
 						}
 
-						any.shack = 20;
-						any.semo_you = 2;
+						cutter.shack = 20;
+						cutter.semo_you = 2;
 					}
 				}
 			}
-			if (nemo.ro == 45 && nemo.y > 130)//마름모 자름
+			if (fruit.ro == 45 && fruit.y > 130)//마름모 자름
 			{
-				if (left_x < nemo.x - 25 && right_x > nemo.x + 25 && left_y > nemo.y - 25 && left_y < nemo.y + 25 && right_y > nemo.y - 25 && right_y < nemo.y + 25)//가로 자름
+				if (left_x < fruit.x - 25 && right_x > fruit.x + 25 && left_y > fruit.y - 25 && left_y < fruit.y + 25 && right_y > fruit.y - 25 && right_y < fruit.y + 25)//가로 자름
 				{
 					if (abs((left_y - right_y) / (left_x - right_x)) < 0.25)
 					{
-						nemo.active = 0;
-						semo[0].active = 1;
-						semo[1].active = 1;
-						semo[0].x = nemo.x;
-						semo[1].x = nemo.x;
-						semo[0].y = nemo.y;
-						semo[1].y = nemo.y;
+						fruit.active = 0;
+						slice[0].active = 1;
+						slice[1].active = 1;
+						slice[0].x = fruit.x;
+						slice[1].x = fruit.x;
+						slice[0].y = fruit.y;
+						slice[1].y = fruit.y;
 
 						//파티클도 만들어 줘야지~!
 						for (int s{}; s < 10; ++s)
 						{
 							float rands = dist400(gen);
-							light[s].alpha = 1;
-							light[s].x = semo[0].x;
-							light[s].y = semo[0].y;
-							light[s].speed = -2 + rands / 100;
-							light[s].gravity = 0;
+							particle[s].alpha = 1;
+							particle[s].x = slice[0].x;
+							particle[s].y = slice[0].y;
+							particle[s].speed = -2 + rands / 100;
+							particle[s].gravity = 0;
 						}
 
 						//넌 어디로 날라갈레 삼각형아?
@@ -784,70 +789,70 @@ GLvoid Mouse(int button, int state, int x, int y)
 										break;
 									}
 								}
-								if (block[0][go_x].active != 2)
+								if (ground[0][go_x].active != 2)
 								{
 									go_y = 0;
 									pass = 0;
 								}
-								else if (block[1][go_x].active != 2)
+								else if (ground[1][go_x].active != 2)
 								{
 									go_y = 1;
 									pass = 0;
 								}
-								else if (block[2][go_x].active != 2)
+								else if (ground[2][go_x].active != 2)
 								{
 									go_y = 2;
 									pass = 0;
 								}
 							} while (pass);
 
-							semo[i].now_x = semo[i].x;
-							semo[i].now_y = semo[i].y;
+							slice[i].now_x = slice[i].x;
+							slice[i].now_y = slice[i].y;
 							if (i == 0)
-								semo[i].point_x = 0;
+								slice[i].point_x = 0;
 							else
-								semo[i].point_x = 800;
-							semo[i].point_y = semo[i].y;
-							semo[i].move_x = go_x * 50 + 25;
+								slice[i].point_x = 800;
+							slice[i].point_y = slice[i].y;
+							slice[i].move_x = go_x * 50 + 25;
 							//semo[i].move_y = 575 - go_y * 50;
-							semo[i].move_y = 650;
-							semo[i].move_count = 0;
+							slice[i].move_y = 650;
+							slice[i].move_count = 0;
 
-							if (i == 0 && block[go_y][go_x].active == 0)
-								semo[i].turn = 1.35;
-							else if (i == 0 && block[go_y][go_x].active == 1)
-								semo[i].turn = -0.45;
-							else if (i == 1 && block[go_y][go_x].active == 0)
-								semo[i].turn = -0.45;
-							else if (i == 1 && block[go_y][go_x].active == 1)
-								semo[i].turn = 1.35;
+							if (i == 0 && ground[go_y][go_x].active == 0)
+								slice[i].turn = 1.35;
+							else if (i == 0 && ground[go_y][go_x].active == 1)
+								slice[i].turn = -0.45;
+							else if (i == 1 && ground[go_y][go_x].active == 0)
+								slice[i].turn = -0.45;
+							else if (i == 1 && ground[go_y][go_x].active == 1)
+								slice[i].turn = 1.35;
 						}
 
-						any.shack = 20;
-						any.semo_you = 3;
+						cutter.shack = 20;
+						cutter.semo_you = 3;
 					}
 				}
-				else if (left_y < nemo.y - 25 && right_y > nemo.y + 25 && left_x > nemo.x - 25 && left_x < nemo.x + 25 && right_x > nemo.x - 25 && right_x < nemo.x + 25)//세로 자름
+				else if (left_y < fruit.y - 25 && right_y > fruit.y + 25 && left_x > fruit.x - 25 && left_x < fruit.x + 25 && right_x > fruit.x - 25 && right_x < fruit.x + 25)//세로 자름
 				{
 					if (abs((left_y - right_y) / (left_x - right_x)) > 4)
 					{
-						nemo.active = 0;
-						semo[0].active = 1;
-						semo[1].active = 1;
-						semo[0].x = nemo.x;
-						semo[1].x = nemo.x;
-						semo[0].y = nemo.y;
-						semo[1].y = nemo.y;
+						fruit.active = 0;
+						slice[0].active = 1;
+						slice[1].active = 1;
+						slice[0].x = fruit.x;
+						slice[1].x = fruit.x;
+						slice[0].y = fruit.y;
+						slice[1].y = fruit.y;
 
 						//파티클도 만들어 줘야지~!
 						for (int s{}; s < 10; ++s)
 						{
 							float rands = dist400(gen);
-							light[s].alpha = 1;
-							light[s].x = semo[0].x;
-							light[s].y = semo[0].y;
-							light[s].speed = -2 + rands / 100;
-							light[s].gravity = 0;
+							particle[s].alpha = 1;
+							particle[s].x = slice[0].x;
+							particle[s].y = slice[0].y;
+							particle[s].speed = -2 + rands / 100;
+							particle[s].gravity = 0;
 						}
 
 						//넌 어디로 날라갈레 삼각형아?
@@ -868,98 +873,98 @@ GLvoid Mouse(int button, int state, int x, int y)
 										break;
 									}
 								}
-								if (block[0][go_x].active != 2)
+								if (ground[0][go_x].active != 2)
 								{
 									go_y = 0;
 									pass = 0;
 								}
-								else if (block[1][go_x].active != 2)
+								else if (ground[1][go_x].active != 2)
 								{
 									go_y = 1;
 									pass = 0;
 								}
-								else if (block[2][go_x].active != 2)
+								else if (ground[2][go_x].active != 2)
 								{
 									go_y = 2;
 									pass = 0;
 								}
 							} while (pass);
 
-							semo[i].now_x = semo[i].x;
-							semo[i].now_y = semo[i].y;
+							slice[i].now_x = slice[i].x;
+							slice[i].now_y = slice[i].y;
 							if (i == 0)
-								semo[i].point_x = 0;
+								slice[i].point_x = 0;
 							else
-								semo[i].point_x = 800;
-							semo[i].point_y = semo[i].y;
-							semo[i].move_x = go_x * 50 + 25;
+								slice[i].point_x = 800;
+							slice[i].point_y = slice[i].y;
+							slice[i].move_x = go_x * 50 + 25;
 							//semo[i].move_y = 575 - go_y * 50;
-							semo[i].move_y = 650;
-							semo[i].move_count = 0;
+							slice[i].move_y = 650;
+							slice[i].move_count = 0;
 
-							if (i == 0 && block[go_y][go_x].active == 0)
-								semo[i].turn = -1.35;
-							else if (i == 0 && block[go_y][go_x].active == 1)
-								semo[i].turn = 0.45;
-							else if (i == 1 && block[go_y][go_x].active == 0)
-								semo[i].turn = 0.45;
-							else if (i == 1 && block[go_y][go_x].active == 1)
-								semo[i].turn = -1.35;
+							if (i == 0 && ground[go_y][go_x].active == 0)
+								slice[i].turn = -1.35;
+							else if (i == 0 && ground[go_y][go_x].active == 1)
+								slice[i].turn = 0.45;
+							else if (i == 1 && ground[go_y][go_x].active == 0)
+								slice[i].turn = 0.45;
+							else if (i == 1 && ground[go_y][go_x].active == 1)
+								slice[i].turn = -1.35;
 						}
 
-						any.shack = 20;
-						any.semo_you = 4;
+						cutter.shack = 20;
+						cutter.semo_you = 4;
 					}
 				}
 			}
 
-			any.cut_active = 0;
+			cutter.cut_active = 0;
 		}
-		if (any.move == 1 || any.move == 2)//나뉜 삼각형 놓을때
+		if (cutter.move == 1 || cutter.move == 2)//나뉜 삼각형 놓을때
 		{
-			if (any.move == 1)//왼쪽거
+			if (cutter.move == 1)//왼쪽거
 			{
 
-				if (baskets[0].active == 1 && x > baskets[0].x - 25 && x < baskets[0].x + 25 && y > baskets[0].y - 25 && y < baskets[0].y + 25)
+				if (baskets.active == 1 && x > baskets.x - 25 && x < baskets.x + 25 && y > baskets.y - 25 && y < baskets.y + 25)
 				{
 
 
-					if (semo[0].active == 0 && semo[1].active == 0)
+					if (slice[0].active == 0 && slice[1].active == 0)
 					{
-						nemo.active = 1;
-						nemo.y = 600;
+						fruit.active = 1;
+						fruit.y = 600;
 
 						int ch = dist(gen);
 						if (ch == 1)
-							nemo.ro = 0;
+							fruit.ro = 0;
 						else
-							nemo.ro = 45;
+							fruit.ro = 45;
 					}
 				}
 
 			}
-			if (any.move == 2)//오른쪽거
+			if (cutter.move == 2)//오른쪽거
 			{
 
-				if (baskets[0].active == 1 && x > baskets[0].x - 25 && x < baskets[0].x + 25 && y > baskets[0].y - 25 && y < baskets[0].y + 25)
+				if (baskets.active == 1 && x > baskets.x - 25 && x < baskets.x + 25 && y > baskets.y - 25 && y < baskets.y + 25)
 				{
 
 
-					if (semo[0].active == 0 && semo[1].active == 0)
+					if (slice[0].active == 0 && slice[1].active == 0)
 					{
-						nemo.active = 1;
-						nemo.y = 600;
+						fruit.active = 1;
+						fruit.y = 600;
 
 						int ch = dist(gen);
 						if (ch == 1)
-							nemo.ro = 0;
+							fruit.ro = 0;
 						else
-							nemo.ro = 45;
+							fruit.ro = 45;
 					}
 				}
 
 			}
-			any.move = 0;
+			cutter.move = 0;
 		}
 	}
 }
@@ -971,21 +976,21 @@ GLvoid Reshape(int w, int h)
 }
 GLvoid Motion(int x, int y)
 {
-	if (any.cut_active == 1)
+	if (cutter.cut_active == 1)
 	{
-		any.cut_x[1] = x;
-		any.cut_y[1] = y;
+		cutter.cut_x[1] = x;
+		cutter.cut_y[1] = y;
 	}
 
-	if (any.move == 1)
+	if (cutter.move == 1)
 	{
-		semo[0].x = x;
-		semo[0].y = y;
+		slice[0].x = x;
+		slice[0].y = y;
 	}
-	if (any.move == 2)
+	if (cutter.move == 2)
 	{
-		semo[1].x = x;
-		semo[1].y = y;
+		slice[1].x = x;
+		slice[1].y = y;
 	}
 }
 GLvoid KeyBoard(unsigned char key, int x, int y)
