@@ -333,14 +333,19 @@ GLvoid main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
 }
 
 void init_LOW_COL() {
-	printf("Enter Low & Col : ");
+	printf("Enter Low : ");
 	fseek(stdin, 0, SEEK_END);
 	scanf("%d", &LOW);
+
+	printf("Enter Col : ");
+	fseek(stdin, 0, SEEK_END);
+	scanf("%d", &COL);
+
 	if (!(5 <= LOW and LOW <= 25)) {
 		printf("not appropriate value \n");
 		init_LOW_COL();
 	}
-	COL = LOW;
+	//COL = LOW;
 	Svalue = 2.0f / LOW;
 	if (Svalue <= 0) printf("Side Value Error = %f\n", Svalue);
 }
@@ -1001,10 +1006,12 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 		}
 		break;
 
-	case 'r': case 'R': // 미로 제작 --> 미로가 된 부분 육면체가 없어짐
+	case 'R': // 미로 제작 --> 미로가 된 부분 육면체가 없어짐
 		printf(" R pressed : Make Maze\n");
 		gen_maze();
 		break;
+
+	
 
 	case 'v': case 'V': // 육면체들 움직임이 멈추고 낮은 높이로 변함
 		if (pressed_V) {
@@ -1048,9 +1055,12 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 		printf(" 3 pressed : View on TPS\n");
 		break;
 
-	case 'c': case 'C': // 모든 값 초기화
+	case 'r':  // 모든 값 초기화
 		printf(" C pressed : Initialize entire values\n");
+		
+		init_LOW_COL();
 		init_ALL();
+		
 		perspective_view = true;
 		perspective_Z = -5.0f;
 		break;
