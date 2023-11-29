@@ -1252,12 +1252,27 @@ void InitShader()
 	glAttachShader(s_program, vertexShader);
 	glAttachShader(s_program, fragmentShader);
 	glLinkProgram(s_program);
+
+	//// lightColor 값을 설정
+	//int lightColorLocation = glGetUniformLocation(s_program, "lightColor");
+	//glUniform3f(lightColorLocation, 1.0f, 1.0f, 1.0f);  // 백색 조명 (예: 흰색)
+
+
 	//checkCompileErrors(s_program, "PROGRAM");
 	//--- 세이더 삭제하기
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
+
+	
+
+
 	//--- Shader Program 사용하기
 	glUseProgram(s_program);
+
+	int lightColorLocation = glGetUniformLocation(s_program, "lightColor"); //--- lightColor 값 전달: (1.0, 1.0, 1.0) 백색
+	glUniform3f(lightColorLocation, 0.0, 1.0, 0.0);
+
+	
 }
 
 int beforeX = 0, beforeY = 0;
