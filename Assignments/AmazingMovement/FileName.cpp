@@ -1416,7 +1416,7 @@ GLvoid InitBuffer()
 	glUseProgram(s_program);
 
 	unsigned int lightPosLocation = glGetUniformLocation(s_program, "lightPos"); //--- lightPos 값 전달: (0.0, 0.0, 5.0);
-	glUniform3f(lightPosLocation, 0.0, 0.0, 5.0);
+	glUniform3f(lightPosLocation, 0.0, 5.0, 1.0);
 
 	if (!initLight) {
 		lightColorLocation = glGetUniformLocation(s_program, "lightColor"); //--- lightColor 값 전달: (1.0, 1.0, 1.0) 백색
