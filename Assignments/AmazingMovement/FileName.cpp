@@ -799,7 +799,23 @@ GLvoid TimerFunction(int value) {
 					}
 				}
 				else if (secAni) {
-					
+					if (-2 == B[c][l].dir) { // 내려가는 방향일 때. so 감소
+						if (B[c][l].scale <= B[c][l].min_scale) { // 최저보다 작아지면
+							B[c][l].dir *= -1; // 반대 방향으로
+						}
+						else {
+							B[c][l].scale -= B[c][l].velocity;
+						}
+					}
+					else if (2 == B[c][l].dir) { // 올라가는 방향일 때. so 증가
+						if (B[c][l].scale >= B[c][l].max_scale) { // 최저보다 작아지면
+							B[c][l].dir *= -1; // 반대 방향으로
+						}
+						else {
+							B[c][l].scale += B[c][l].velocity;
+
+						}
+					}
 
 					
 				}
@@ -946,6 +962,25 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 			printf(" M pressed : Pillar animation play\n");
 			secAni = true;
 
+			float firMax = 0.5f + ((float)rand() / (RAND_MAX) / 2);
+
+			float firMin = 0.1f + ((float)rand() / (RAND_MAX) / 4);
+
+			for (int c{}; c < COL; ++c)
+				for (int l{}; l < LOW; ++l)
+				{
+
+					
+						B[c][l].dir = -2;
+						B[c][l].scale = 0.75f / LOW * l+0.35f;
+						B[c][l].velocity = 0.000000005f / LOW * (LOW-l) + 0.004999995f;//속도
+						
+						B[c][l].max_scale = firMax;//최대 최소
+						B[c][l].min_scale = firMin;
+
+						
+				
+				}
 			
 		}
 		preAni = 2;
@@ -961,7 +996,7 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 			printf(" M pressed : Pillar animation play\n");
 			thiAni = true;
 
-			float firVel=  0.002f + (float)rand() / (RAND_MAX) / 300;
+			float firVel=  0.002f + (float)rand() / (RAND_MAX) / 300;//0.002 0.005
 			float secVel = 0.002f + (float)rand() / (RAND_MAX) / 300;
 			float firMax = 0.5f + ((float)rand() / (RAND_MAX) / 2);
 			float secMax = 0.5f + ((float)rand() / (RAND_MAX) / 2);
