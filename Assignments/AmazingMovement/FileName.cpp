@@ -1,50 +1,11 @@
-#define _CRT_SECURE_NO_WARNINGS
+#include "obj.h"
 
-#include <iostream>
-#include <vector>
-#include "GL/glew.h"
-#include "GL/freeglut.h"
-#include "gl/glm/glm.hpp"
-#include "gl/glm/ext.hpp"
-#include "gl/glm/gtc/matrix_transform.hpp"
-#include <string>
-#include <fstream>
-#include <sstream>
-#include <time.h>
-#include <stdlib.h>
-#include <Windows.h>
-#include <math.h>
-#include <stdio.h>
-#include <algorithm>
-#include <MMSystem.h> 
+random_device rd;
+mt19937 gen(rd());
+uniform_int_distribution<int> dis2(0, 1);
+uniform_int_distribution<int> dis24(0, 23);
 
-#pragma comment(lib, "glew32.lib")
-#pragma comment(lib, "freeglut.lib")
-#pragma comment(lib, "msimg32.lib")
-#pragma comment(lib, "winmm.lib")
 
-using namespace std;
-
-class objRead {
-public:
-	std::vector< unsigned int > vertexIndices, uvIndices, normalIndices;
-	std::vector< glm::vec3 > temp_vertices;
-	std::vector< glm::vec2 > temp_uvs;
-	std::vector< glm::vec3 > temp_normals;
-	std::vector< glm::vec3 > outvertex, outnormal;
-	std::vector< glm::vec2 > outuv;
-
-	float sumX = 0.0, sumY = 0.0, sumZ = 0.0;
-	float aveX, aveY, aveZ;
-	float scaleX, scaleY, scaleZ;
-	float minX = 0.0, minY = 0.0, minZ = 0.0;
-	float maxX = 0.0, maxY = 0.0, maxZ = 0.0;
-	float scaleAll;
-
-	float sizeX, sizeY, sizeZ;
-
-	int loadObj_normalize_center(const char* filename);
-};
 
 #define SWAP(a, b, type) do { \
     type temp; \
@@ -57,65 +18,60 @@ public:
 #define SCREEN_W (GLint)1000
 #define SCREEN_H (GLint)1000
 
-bool left_button = 0;
-bool right_button = 0;
+bool left_button{};
+bool right_button{};
 
-class COLORVALUE {
-public:
-	float r;
-	float g;
-	float b;
-};
+
 
 GLvoid drawScene(GLvoid);
-GLvoid Reshape(int w, int h);
-GLchar* filetobuf(const char* file);
-void random_color(COLORVALUE* color);
-void Mouse(int button, int state, int x, int y);
-void con_D_to_Ogl(int x, int y, float* ox, float* oy);
-void con_Ogl_to_D(int* x, int* y, float ox, float oy);
-GLvoid Keyboard(unsigned char key, int x, int y);
-GLvoid KeyboardUp(unsigned char key, int x, int y);
-GLvoid KeyboardSpecial(int key, int x, int y);
-void Motion(int x, int y);
-void TimerFunction(int value);
+GLvoid Reshape(int , int );
+GLchar* filetobuf(const char* );
+GLvoid random_color(Rgb* );
+GLvoid Mouse(int , int , int , int );
+GLvoid con_D_to_Ogl(int , int , float* , float* );
+GLvoid con_Ogl_to_D(int* , int* , float , float );
+GLvoid Keyboard(unsigned char , int , int );
+GLvoid KeyboardUp(unsigned char , int , int );
+GLvoid KeyboardSpecial(int , int , int );
+GLvoid Motion(int , int );
+GLvoid TimerFunction(int );
 
-void subDFS(char** maze, bool** visited, int y, int x);
-void DFS(char** maze, bool** visited, int y, int x);
-char** setMaze(int size);
-void printMaze(char*** maze);
+void subDFS(char** , bool** , int , int );
+GLvoid DFS(char** , bool** , int , int );
+GLchar** setMaze(int );
+GLvoid printMaze(char*** );
 
-void SetCamera();
-void SetProjection();
-void SetTransform();
-void SetTransform_FPS();
-void set_radians();
+GLvoid SetCamera();
+GLvoid SetProjection();
+GLvoid SetTransform();
+GLvoid SetTransform_FPS();
+GLvoid set_radians();
 
-void draw_pillar(glm::mat4 TR, unsigned int modelLocation);
-void draw_player(glm::mat4 TR, unsigned int modelLocation);
-void draw_rect();
-void draw_rect_line();
+GLvoid draw_pillar(glm::mat4 , unsigned int );
+GLvoid draw_player(glm::mat4 , unsigned int );
+GLvoid draw_rect();
+GLvoid draw_rect_line();
 
-void PrintInstruction();
+GLvoid PrintInstruction();
 
-void make_vertexShaders();
-void make_fragmentShaders();
+GLvoid make_vertexShaders();
+GLvoid make_fragmentShaders();
 GLuint make_shaderProgram();
-void InitBuffer();
-void InitShader();
+GLvoid InitBuffer();
+GLvoid InitShader();
 
-void init_LOW_COL();
-void init_PILLARS();
-void init_PLAYER();
-void init_ALL();
+GLvoid init_LOW_COL();
+GLvoid init_PILLARS();
+GLvoid init_PLAYER();
+GLvoid init_ALL();
 
-void move_LEFT();
-void move_RIGHT();
-void move_UP();
-void move_DOWN();
+GLvoid move_LEFT();
+GLvoid move_RIGHT();
+GLvoid move_UP();
+GLvoid move_DOWN();
 
-void ChangeVelocity(int d);
-void LowHeight();
+GLvoid ChangeVelocity(int );
+GLvoid LowHeight();
 
 GLchar* vertexSource, * fragmentSource;
 GLuint vertexShader;
@@ -124,25 +80,25 @@ GLuint s_program;
 GLuint vao, vbo[3];
 
 // 은면 제거 설정
-int enable_depth = true;
+int enable_depth{ 1 };
 
-GLfloat DEGREES = 0.0f;
-GLfloat cameraPosZ = 2.0f;
-GLfloat cameraPosX = 0.0f;
+GLfloat DEGREES{ 0.0f };
+GLfloat cameraPosZ{ 2.0f };
+GLfloat cameraPosX{ 0.0f };
 
-int Rotate_Y_Anime = 0;
-GLfloat cameraY = 0.0f;
+int Rotate_Y_Anime{ 0 };
+GLfloat cameraY{ 0.0f };
 
-int perspective_view = 1;
-GLfloat perspective_Z = -5.0f;
+int perspective_view{ 1 };
+GLfloat perspective_Z{ -5.0f };
 
 GLfloat Svalue;
 
-int UpDownMoveAnime = false;
+int UpDownMoveAnime{  };
 
-GLfloat ra = 0.0f;
-int show_player = false;
-int view_fps = false;
+GLfloat ra{ 0.0f };
+int show_player{};
+int view_fps{};
 
 bool off{ true };
 int lightColorLocation{};
@@ -247,45 +203,14 @@ GLfloat col[TRI_COUNT * 3][3] =
 	{1.0f, 0.2f, 0.2f}, {1.0f, 0.2f, 0.2f}, {1.0f, 0.2f, 0.2f},
 };
 
-class PILLAR {
-public:
-	bool exist;
-	bool show;
 
-	int l; // low num
-	int c; // col num
-	GLfloat w; // x 너비
-	GLfloat h; // y 너비
-
-	GLfloat max_scale;
-	GLfloat min_scale;
-
-	GLfloat velocity;
-
-	GLfloat scale;
-
-	int dir; // -2 : moving down, -1 : stop, heading down /// 2 : moving up, 1 : stop, heading up 
-};
-
-class PLAYER {
-public:
-	GLfloat x;
-	GLfloat y;
-
-	int dir;
-	int moving_dir;
-
-	GLfloat s_value;
-
-	int cnt;
-};
 
 // 2
 
-PILLAR B[26][26];
-PLAYER P;
+Hexahedron B[26][26];
+Me P;
 
-int LOW = 0, COL = 0;
+int LOW{}, COL{};
 
 
 GLvoid main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정 
@@ -307,11 +232,11 @@ GLvoid main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
 	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK)
 	{
-		std::cerr << "Unable to initialize GLEW" << std::endl;
+		cerr << "Unable to initialize GLEW" << endl;
 		exit(EXIT_FAILURE);
 	}
 	else
-		std::cout << "GAME START!\n";
+		cout << "GAME START!\n";
 
 	make_vertexShaders();
 	make_fragmentShaders();
@@ -337,38 +262,38 @@ GLvoid main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정
 	glutMainLoop(); // 이벤트 처리 시작 
 }
 
-void init_LOW_COL() {
+GLvoid init_LOW_COL() {
 	printf("Enter Low : ");
 	fseek(stdin, 0, SEEK_END);
-	scanf("%d", &LOW);
+	cin >> LOW;
 
 	printf("Enter Col : ");
 	fseek(stdin, 0, SEEK_END);
-	scanf("%d", &COL);
+	cin >> COL;
 
 	if (!(5 <= LOW and LOW <= 25)) {
 		printf("not appropriate value \n");
 		init_LOW_COL();
 	}
-	//COL = LOW;
+
 	Svalue = 2.0f / LOW;
 	if (Svalue <= 0) printf("Side Value Error = %f\n", Svalue);
 }
 
-void init_PILLARS() {
+GLvoid init_PILLARS() {
 	// LOW와 COL에 따라, exist 부여.
 
-	for (int c = 0; c < COL; c++) {     // 0 ~ COL
-		for (int l = 0; l < LOW; l++) { // 0 ~ LOW
+	for (int c{}; c < COL; ++c) {     // 0 ~ COL
+		for (int l{}; l < LOW; ++l) { // 0 ~ LOW
 
 			B[c][l].show = true;
-			B[c][l].exist = true;
+			B[c][l].is = true;
 
 			B[c][l].c = c;
 			B[c][l].l = l;
 			B[c][l].w = Svalue, B[c][l].h = Svalue;
 
-			switch (rand() % 2) {
+			switch (dis2(gen)) {
 			case 0: B[c][l].dir = -2; break;
 			case 1: B[c][l].dir = 2; break;
 			}
@@ -392,7 +317,7 @@ void init_PILLARS() {
 	}
 }
 
-void init_PLAYER() {
+GLvoid init_PLAYER() {
 	// -1 : left, 1: right, 2: top, -2: bottom
 	P.dir = 2;
 	P.moving_dir = 0;
@@ -444,7 +369,7 @@ GLvoid drawScene() //--- 콜백 함수: 그리기 콜백 함수
 
 GLfloat Zmove = 0.0f;
 
-void SetTransform() {
+GLvoid SetTransform() {
 	glm::mat4 TR = glm::mat4(1.0f);
 
 	unsigned int modelLocation = glGetUniformLocation(s_program, "modelTransform");
@@ -503,7 +428,7 @@ void SetTransform() {
 
 
 
-void set_radians() {
+GLvoid set_radians() {
 	switch (P.dir) {
 	case 1: // right
 		ra = 270.0f;
@@ -520,7 +445,7 @@ void set_radians() {
 	}
 }
 
-void SetTransform_FPS() {
+GLvoid SetTransform_FPS() {
 	glm::mat4 TR = glm::mat4(1.0f);
 
 	unsigned int modelLocation = glGetUniformLocation(s_program, "modelTransform");
@@ -561,7 +486,7 @@ void SetTransform_FPS() {
 	TR = glm::scale(TR, glm::vec3(1.0f, 0.02f, 1.0f));
 
 	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(TR));
-	for (int i = 36; i < 36 + 33 + 1; i += 3) {
+	for (int i{ 36 }; i < 36 + 33 + 1; i += 3) {
 		glDrawArrays(GL_TRIANGLES, i, 3);
 	}
 
@@ -582,14 +507,14 @@ void SetTransform_FPS() {
 }
 
 
-void draw_pillar(glm::mat4 TR, unsigned int modelLocation) {
+GLvoid draw_pillar(glm::mat4 TR, unsigned int modelLocation) {
 	// 변의 길이 정하기.
 
 	GLfloat ScaleValue = Svalue / 2;
 
-	for (int c = 0; c < COL; c++) {
-		for (int l = 0; l < LOW; l++) {
-			if (B[c][l].show == true and B[c][l].exist == true) {
+	for (int c{}; c < COL; ++c) {
+		for (int l{}; l < LOW; ++l) {
+			if (B[c][l].show  and B[c][l].is ) {
 				GLfloat Xvalue = -1.0f + (Svalue / 2) + (Svalue * B[c][l].l); // 왼쪽 끝으로 이동 + 변의 1/2만큼 이동 + (LOW만큼 오른쪽으로)
 				GLfloat Zvalue = 1.0f - (Svalue / 2) - (Svalue * B[c][l].c); // 앞쪽 끝으로 이동 + 변의 1/2만큼 이동 + (COL만큼 뒤쪽으로)
 
@@ -621,7 +546,7 @@ void draw_pillar(glm::mat4 TR, unsigned int modelLocation) {
 }
 
 
-void draw_player(glm::mat4 TR, unsigned int modelLocation) {
+GLvoid draw_player(glm::mat4 TR, unsigned int modelLocation) {
 	if (show_player) {
 		GLfloat Xvalue = -1.0f + (Svalue / 2) + (Svalue * P.x); // 왼쪽 끝으로 이동 + 변의 1/2만큼 이동 + (LOW만큼 오른쪽으로)
 		GLfloat Zvalue = 1.0f - (Svalue / 2) - (Svalue * P.y); // 앞쪽 끝으로 이동 + 변의 1/2만큼 이동 + (COL만큼 뒤쪽으로)
@@ -632,7 +557,7 @@ void draw_player(glm::mat4 TR, unsigned int modelLocation) {
 
 		glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(TR));
 
-		for (int i = 72; i < 87 + 1; i += 3) {
+		for (int i{ 72 }; i < 87 + 1; i += 3) {
 			glDrawArrays(GL_TRIANGLES, i, 3);
 		}
 
@@ -645,8 +570,8 @@ void draw_player(glm::mat4 TR, unsigned int modelLocation) {
 	}
 }
 
-void move_RIGHT() {
-	if (P.moving_dir == 0 && (int)(P.x + 0.5f) + 1 <= LOW) { // 움직이고 있지 않을때만 && 
+GLvoid move_RIGHT() {
+	if (0==P.moving_dir  && (int)(P.x + 0.5f) + 1 <= LOW) { // 움직이고 있지 않을때만 && 
 		//printf("\nMoving Right, P.x(%f) <= LOW(%d)\n", P.x, LOW);
 		if (B[(int)(P.y + 0.5f)][(int)(P.x + 0.5f) + 1].show == 0) {
 			//printf("Going, B[%d][%d].show == 0 true\n", (int)(P.y + 0.5f), (int)(P.x + 0.5f) + 1);
@@ -659,8 +584,8 @@ void move_RIGHT() {
 	}
 }
 
-void move_LEFT() {
-	if (P.moving_dir == 0 && (int)(P.x + 0.5f) - 1 >= 0) { // 움직이고 있지 않을때만 적용
+GLvoid move_LEFT() {
+	if (0==P.moving_dir  and 0<=(int)(P.x + 0.5f) - 1 ) { // 움직이고 있지 않을때만 적용
 		//printf("\nMoving Left, P.x(%f) <= LOW(%d)\n", P.x, LOW);
 		if (B[(int)(P.y + 0.5f)][(int)(P.x + 0.5f) - 1].show == 0) {
 			//printf("Going, B[%d][%d].show == 0 true\n", (int)(P.y + 0.5f), (int)(P.x + 0.5f) - 1);
@@ -672,13 +597,13 @@ void move_LEFT() {
 	}
 }
 
-void move_UP() {
-	if (P.moving_dir == 0 && (int)(P.y + 0.5f) + 1 <= LOW) { // 움직이고 있지 않을때만 적용
+GLvoid move_UP() {
+	if (0==P.moving_dir  and LOW >=(int)(P.y + 0.5f) + 1 ) { // 움직이고 있지 않을때만 적용
 		//printf("\nMoving Up, P.y(%f) <= LOW(%d)\n", P.y, LOW);
 		if (B[(int)(P.y + 0.5f) + 1][(int)(P.x + 0.5f)].show == 0) {
 			//printf("Going, B[%d][%d].show == 0 true\n", (int)(P.y + 0.5f) + 1, (int)(P.x + 0.5f));
 
-			if (B[(int)(P.y + 0.5f) + 1][(int)(P.x + 0.5f)].exist == false) { // 목적지 도착, exist로 판별
+			if (B[(int)(P.y + 0.5f) + 1][(int)(P.x + 0.5f)].is == false) { // 목적지 도착, exist로 판별
 				MessageBox(NULL, L"You arrived at destination", L"Game Clear",
 					MB_OK | MB_ICONINFORMATION);
 			}
@@ -691,9 +616,9 @@ void move_UP() {
 
 	}
 }
-void move_DOWN() {
+GLvoid move_DOWN() {
 	printf("P.y = %d \n", (int)(P.y + 0.5f));
-	if (P.moving_dir == 0 && (int)(P.y + 0.5f) - 1 >= 0) { // 움직이고 있지 않을때만 적용
+	if (0==P.moving_dir  and 0<=(int)(P.y + 0.5f) - 1 ) { // 움직이고 있지 않을때만 적용
 		//printf("\nMoving Up, P.y(%f) <= LOW(%d)\n", P.y, LOW);
 		if (B[(int)(P.y + 0.5f) - 1][(int)(P.x + 0.5f)].show == 0) {
 			//printf("Going, B[%d][%d].show == 0 true\n", (int)(P.y + 0.5f) - 1, (int)(P.x + 0.5f));
@@ -707,26 +632,26 @@ void move_DOWN() {
 	}
 }
 
-void draw_rect() {
-	for (int i = 0; i < 33 + 1; i += 3) {
+GLvoid draw_rect() {
+	for (int i{}; i < 33 + 1; i += 3) {
 		glDrawArrays(GL_TRIANGLES, i, 3);
 	}
 }
 
-void draw_rect_line() {
-	for (int i = 0; i < 33 - 1; i++) {
+GLvoid draw_rect_line() {
+	for (int i{}; i < 33 - 1; i++) {
 		glDrawArrays(GL_LINES, i, 2);
 	}
 }
 
 void gen_maze() {
-	for (int c = 0; c < COL; c++) {
-		for (int l = 0; l < LOW; l++) {
+	for (int c{}; c < COL; ++c) {
+		for (int l{}; l < LOW; ++l) {
 			B[c][l].show = true;
 		}
 	}
 
-	if (LOW % 2 == 0) { // 짝수라면
+	if (0==LOW % 2 ) { // 짝수라면
 		B[1][LOW - 2].show = false;
 		B[0][LOW - 2].show = false;
 		B[LOW - 1][1].show = false;
@@ -737,15 +662,15 @@ void gen_maze() {
 		B[LOW - 1][1].show = false;
 	}
 
-	int maze_LOW = LOW / 2 - 1;
-	if (LOW % 2 == 0) maze_LOW--;
+	int maze_LOW{ LOW / 2 - 1 };
+	if (0==LOW % 2 ) --maze_LOW;
 
-	char** maze = setMaze(maze_LOW);
+	char** maze{ setMaze(maze_LOW) };
 	// printMaze(&maze);
 }
 
 
-void SetCamera() {
+GLvoid SetCamera() {
 	glm::mat4 VR = glm::mat4(1.0f);
 
 	glm::vec3 cameraPos = glm::vec3(cameraPosX, 0.0f, cameraPosZ); //--- 카메라 위치
@@ -761,7 +686,7 @@ void SetCamera() {
 	glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(VR));
 }
 
-void SetProjection() {
+GLvoid SetProjection() {
 	glm::mat4 PR = glm::mat4(1.0f);
 	unsigned int projLocation = glGetUniformLocation(s_program, "projectionTransform");
 
@@ -775,22 +700,22 @@ void SetProjection() {
 	/* ---------------------------------------------------------------------------- */
 }
 
-void LowHeight() {
+GLvoid LowHeight() {
 	UpDownMoveAnime = false;
-	for (int c = 0; c < COL; c++) {
-		for (int l = 0; l < LOW; l++) {
-			if (B[c][l].exist == true) {
+	for (int c{}; c < COL; ++c) {
+		for (int l{}; l < LOW; ++l) {
+			if (B[c][l].is) {
 				B[c][l].scale = B[c][l].min_scale + B[c][l].velocity + 0.001f;
 			}
 		}
 	}
 }
 
-void ChangeVelocity(int d) {
-	for (int c = 0; c < COL; c++) {
-		for (int l = 0; l < LOW; l++) {
-			if (B[c][l].exist == true) {
-				if (d == -1) {
+GLvoid ChangeVelocity(int d) {
+	for (int c{}; c < COL; ++c) {
+		for (int l{}; l < LOW; ++l) {
+			if (B[c][l].is ) {
+				if (-1==d ) {
 					printf(" - pressed : ");
 					if (B[c][l].velocity - 0.0005f > 0.0f) {
 						printf("Velocity reduction\n");
@@ -800,7 +725,7 @@ void ChangeVelocity(int d) {
 						printf("Velocity reduction limit\n");
 					}
 				}
-				else if (d == 1) {
+				else if (1==d ) {
 					printf(" + pressed : ");
 					if (B[c][l].velocity + 0.001f < 0.05f) {
 						printf("Velocity increase\n");
@@ -817,7 +742,7 @@ void ChangeVelocity(int d) {
 
 }
 
-void init_ALL() {
+GLvoid init_ALL() {
 	init_PLAYER();
 	init_PILLARS();
 	cameraPosZ = 2.0f;
@@ -834,18 +759,22 @@ void init_ALL() {
 	ra = 0.0f;
 	show_player = false;
 	view_fps = false;
+	off = true;
+	chooseCol = 1;
+	initLight = false;
+	
 }
 
-void TimerFunction(int value) {
+GLvoid TimerFunction(int value) {
 
 	// scale 조정. -> B[c][l] 각각의 max_scale if문 달아야 함.
 	// scale 얼마나? -> velocity 따라서 증감. dir따라서 감소할지 증가할지 정해주기.
-	for (int c = 0; c < COL; c++) {
-		for (int l = 0; l < LOW; l++) {
-			if (B[c][l].show == true and B[c][l].exist == true) {
+	for (int c{}; c < COL; ++c) {
+		for (int l{}; l < LOW; ++l) {
+			if (B[c][l].show  and B[c][l].is ) {
 
 				if (UpDownMoveAnime) {
-					if (B[c][l].dir == -2) { // 내려가는 방향일 때. so 감소
+					if (-2==B[c][l].dir ) { // 내려가는 방향일 때. so 감소
 						if (B[c][l].scale <= B[c][l].min_scale) { // 최저보다 작아지면
 							B[c][l].dir *= -1; // 반대 방향으로
 						}
@@ -853,7 +782,7 @@ void TimerFunction(int value) {
 							B[c][l].scale -= B[c][l].velocity;
 						}
 					}
-					else if (B[c][l].dir == 2) { // 올라가는 방향일 때. so 증가
+					else if (2==B[c][l].dir ) { // 올라가는 방향일 때. so 증가
 						if (B[c][l].scale >= B[c][l].max_scale) { // 최저보다 작아지면
 							B[c][l].dir *= -1; // 반대 방향으로
 						}
@@ -871,7 +800,7 @@ void TimerFunction(int value) {
 	switch (P.moving_dir) {
 	case 0: break;
 	case -1: // Left
-		if (P.cnt <= 19) {
+		if (19 >=P.cnt ) {
 			P.x -= 0.05f; P.cnt++;
 		}
 		else {
@@ -880,7 +809,7 @@ void TimerFunction(int value) {
 		}
 		break;
 	case 1: // Right
-		if (P.cnt <= 19) {
+		if (19 >=P.cnt ) {
 			P.x += 0.05f; P.cnt++;
 		}
 		else {
@@ -889,7 +818,7 @@ void TimerFunction(int value) {
 		}
 		break;
 	case -2: // Down
-		if (P.cnt <= 19) {
+		if (19 >= P.cnt ) {
 			P.y -= 0.05f; P.cnt++;
 		}
 		else {
@@ -898,7 +827,7 @@ void TimerFunction(int value) {
 		}
 		break;
 	case 2: // Up
-		if (P.cnt <= 19) {
+		if (19 >= P.cnt ) {
 			P.y += 0.05f; P.cnt++;
 		}
 		else {
@@ -908,10 +837,10 @@ void TimerFunction(int value) {
 		break;
 	}
 
-	if (Rotate_Y_Anime == 1) {
+	if (1==Rotate_Y_Anime ) {
 		cameraY += 0.3f;
 	}
-	else if (Rotate_Y_Anime == -1) {
+	else if (-1==Rotate_Y_Anime ) {
 		cameraY -= 0.3f;
 	}
 
@@ -920,9 +849,9 @@ void TimerFunction(int value) {
 	glutTimerFunc(10, TimerFunction, 1);
 }
 
-int pressed_V = false;
+int pressed_V{ false };
 
-void PrintInstruction() {
+GLvoid PrintInstruction() {
 	printf("\n -------------------- Key Instruction --------------------\n");
 
 	printf("\n\tO : Ortho projection\n");
@@ -978,7 +907,7 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 
 		lightColorLocation = glGetUniformLocation(s_program, "lightColor"); //--- lightColor 값 전달: (1.0, 1.0, 1.0) 백색
 
-		if (!off){
+		if (!off) {
 			if (1 == chooseCol)
 				glUniform3f(lightColorLocation, 0.3, 0.3, 0.3);
 			else if (2 == chooseCol)
@@ -986,10 +915,10 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 			else if (3 == chooseCol)
 				glUniform3f(lightColorLocation, 0.0, 0.3, 0.0);
 			else if (4 == chooseCol)
-				glUniform3f(lightColorLocation, 0.3, 0.0, 0.3);
+				glUniform3f(lightColorLocation, 0.0, 0.0, 0.3);
 			off = true;
 		}
-		else{
+		else {
 			if (1 == chooseCol)
 				glUniform3f(lightColorLocation, 1.0, 1.0, 1.0);
 			else if (2 == chooseCol)
@@ -997,45 +926,56 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 			else if (3 == chooseCol)
 				glUniform3f(lightColorLocation, 0.0, 1.0, 0.0);
 			else if (4 == chooseCol)
-				glUniform3f(lightColorLocation, 0.3, 0.0, 1.0);
+				glUniform3f(lightColorLocation, 0.0, 0.0, 1.0);
 			off = false;
 		}
 		break;
 		//조명 색 변경
 	case 'c':
+	{
 		lightColorLocation = glGetUniformLocation(s_program, "lightColor"); //--- lightColor 값 전달: (1.0, 1.0, 1.0) 백색
 
+		float l;
+		if (off)
+			l = 0.3f;
+		else
+			l = 1.0f;
 
-		if (1 == chooseCol){
-			glUniform3f(lightColorLocation, 1.0, 0.0, 0.0);
+		if (1 == chooseCol) {
+			glUniform3f(lightColorLocation, l, 0.0, 0.0);
 			chooseCol = 2;
 		}
-		else if (2 == chooseCol){
-			glUniform3f(lightColorLocation, 0.0, 1.0, 0.0);
+		else if (2 == chooseCol) {
+			glUniform3f(lightColorLocation, 0.0, l, 0.0);
 			chooseCol = 3;
 		}
-		else if (3 == chooseCol){
-			glUniform3f(lightColorLocation, 0.0, 0.0, 1.0);
+		else if (3 == chooseCol) {
+			glUniform3f(lightColorLocation, 0.0, 0.0, l);
 			chooseCol = 4;
 		}
-		else if (4 == chooseCol){
-			glUniform3f(lightColorLocation, 1.0, 1.0, 1.0);
+		else if (4 == chooseCol) {
+			glUniform3f(lightColorLocation, l,l, l);
 			chooseCol = 1;
 		}
-		break;
-		//카메라가 바닥의 y측 기준 양/음 공전, 다시 누르면 정지 
+	}
+	break;
+	//카메라가 바닥의 y축 기준 양/음 공전, 다시 누르면 정지 
 	case 'y': // 바닥 y축 기준, 양 / 음 방향 회전
 		if (Rotate_Y_Anime == 0) {
 			printf(" y pressed : Y rotate animation play, Negative direction\n");
-			Rotate_Y_Anime = -1;
+			Rotate_Y_Anime = 1;
 		}
+		else
+			Rotate_Y_Anime = 0;
 		break;
 
 	case 'Y':
 		if (Rotate_Y_Anime == 0) {
 			printf(" Y pressed : Y rotate animation play, Positive direction\n");
-			Rotate_Y_Anime = 1;
+			Rotate_Y_Anime = -1;
 		}
+		else
+			Rotate_Y_Anime = 0;
 		break;
 	case '+': // 육면체 이동하는 속도 증가
 		ChangeVelocity(1);
@@ -1044,13 +984,17 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 		ChangeVelocity(-1);
 		break;
 	case 'r':  // 모든 값 초기화
-		printf(" C pressed : Initialize entire values\n");
+		printf(" r pressed : Initialize entire values\n");
 
 		init_LOW_COL();
 		init_ALL();
 
 		perspective_view = true;
 		perspective_Z = -5.0f;
+
+		
+
+	
 		break;
 		//종료
 	case 'Q': case 'q':
@@ -1093,14 +1037,14 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 		break;
 
 
-	
+
 
 	case 'R': // 미로 제작 --> 미로가 된 부분 육면체가 없어짐
 		printf(" R pressed : Make Maze\n");
 		gen_maze();
 		break;
 
-	
+
 
 	case 'v': case 'V': // 육면체들 움직임이 멈추고 낮은 높이로 변함
 		if (pressed_V) {
@@ -1116,7 +1060,7 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 
 		break;
 
-	
+
 
 	case 's': case 'S': // 미로에서 객체가 나타남 (플레이어)
 		if (show_player) {
@@ -1129,15 +1073,15 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 		}
 		break;
 
-	
 
-	
+
+
 
 	case 'h': case 'H':
 		PrintInstruction();
 		break;
 
-	
+
 	}
 	glutPostRedisplay();
 }
@@ -1201,28 +1145,28 @@ GLvoid KeyboardSpecial(int key, int x, int y) {
 }
 
 GLvoid KeyboardUp(unsigned char key, int x, int y) {
-	switch (key) {
-	case 'y': // 바닥 y축 기준, 양 / 음 방향 회전
-		if (Rotate_Y_Anime == -1) Rotate_Y_Anime = 0;
+	//switch (key) {
+	//case 'y': // 바닥 y축 기준, 양 / 음 방향 회전
+	//	if (Rotate_Y_Anime == -1) Rotate_Y_Anime = 0;
 
-		break;
+	//	break;
 
-	case 'Y':
-		if (Rotate_Y_Anime == 1) Rotate_Y_Anime = 0;
+	//case 'Y':
+	//	if (Rotate_Y_Anime == 1) Rotate_Y_Anime = 0;
 
-		break;
-	}
+	//	break;
+	//}
 }
 
 void subDFS(char** maze, bool** visited, int y, int x) {
-	int i, j, dx[4] = { -2,2,0,0 }, dy[4] = { 0,0,-2,2 }, wx[4] = { -1,1,0,0 }, wy[4] = { 0,0,-1,1 }, size = _msize(*maze) / sizeof(char), num = rand() % 24;
+	int i, j, dx[4] = { -2,2,0,0 }, dy[4] = { 0,0,-2,2 }, wx[4] = { -1,1,0,0 }, wy[4] = { 0,0,-1,1 }, size = _msize(*maze) / sizeof(char), num = dis24(gen);
 	int arr[24][4] = {
 		{ 0,1,2,3 },{ 0,1,3,2 },{ 0,2,1,3 },{ 0,2,3,1 },{ 0,3,1,2 },{ 0,3,2,1 },
 		{ 1,0,2,3 },{ 1,0,3,2 },{ 1,2,0,3 },{ 1,2,3,0 },{ 1,3,0,2 },{ 1,3,2,0 },
 		{ 2,1,0,3 },{ 2,1,3,0 },{ 2,0,1,3 },{ 2,0,3,1 },{ 2,3,1,0 },{ 2,3,0,1 },
 		{ 3,1,2,0 },{ 3,1,0,2 },{ 3,2,1,0 },{ 3,2,0,1 },{ 3,0,1,2 },{ 3,0,2,1 }
 	};
-	for (i = 0; i < 4; i++) {
+	for (i=0; i < 4; ++i) {
 		if (y + dy[arr[num][i]] >= 1 && y + dy[arr[num][i]] < size - 1 && x + dx[arr[num][i]] >= 1 && x + dx[arr[num][i]] < size - 1 && visited[y + dy[arr[num][i]]][x + dx[arr[num][i]]] == false) {
 			*(*(maze + y + wy[arr[num][i]]) + x + wx[arr[num][i]]) = '.';
 			B[y + wy[arr[num][i]]][x + wx[arr[num][i]]].show = false;
@@ -1235,20 +1179,20 @@ void subDFS(char** maze, bool** visited, int y, int x) {
 	}
 }
 
-void DFS(char** maze, bool** visited, int y, int x) {
+GLvoid DFS(char** maze, bool** visited, int y, int x) {
 	*(*(maze + y) + x) = '0';
 	*(*(visited + y) + x) = true;
 	subDFS(maze, visited, y, x);
 }
 
-char** setMaze(int size) {
+GLchar** setMaze(int size) {
 	srand(time(NULL));
 	char** p = (char**)malloc(sizeof(char*) * (size * 2 + 3));
 	bool** visited = (bool**)malloc(sizeof(bool*) * (size * 2 + 3));
-	for (int i = 0; i < size * 2 + 3; i++) {
+	for (int i{}; i < size * 2 + 3; ++i) {
 		*(p + i) = (char*)malloc(sizeof(char) * (size * 2 + 3));
 		*(visited + i) = (bool*)malloc(sizeof(bool) * (size * 2 + 3));
-		for (int j = 0; j < size * 2 + 3; j++) {
+		for (int j{}; j < size * 2 + 3; ++j) {
 			*(*(p + i) + j) = '#';
 			*(*(visited + i) + j) = false;
 		}
@@ -1260,31 +1204,31 @@ char** setMaze(int size) {
 	return p;
 }
 
-void printMaze(char*** maze) {
-	for (int i = 0; i < _msize(*maze) / sizeof(char*); i++) {
-		for (int j = 0; j < _msize(*(*maze + i)) / sizeof(char); j++) {
+GLvoid printMaze(char*** maze) {
+	for (int i{}; i < _msize(*maze) / sizeof(char*); ++i) {
+		for (int j{}; j < _msize(*(*maze + i)) / sizeof(char); ++j) {
 			printf("%c", *(*(*maze + i) + j));
 		}
 		printf("\n");
 	}
 }
 
-void random_color(COLORVALUE* color) {
+GLvoid random_color(Rgb* color) {
 	color->r = (float)rand() / (RAND_MAX);
 	color->g = (float)rand() / (RAND_MAX);
 	color->b = (float)rand() / (RAND_MAX);
 }
 
-void con_D_to_Ogl(int x, int y, float* ox, float* oy) {
-	int w = SCREEN_W;
-	int h = SCREEN_H;
+GLvoid con_D_to_Ogl(int x, int y, float* ox, float* oy) {
+	int w{ SCREEN_W };
+	int h{ SCREEN_H };
 	*ox = (float)((x - (float)w / 2.0) * (float)(1.0 / (float)(w / 2.0)));
 	*oy = -(float)((y - (float)h / 2.0) * (float)(1.0 / (float)(h / 2.0)));
 }
 
-void con_Ogl_to_D(int* x, int* y, float ox, float oy) {
-	float w = SCREEN_W;
-	float h = SCREEN_H;
+GLvoid con_Ogl_to_D(int* x, int* y, float ox, float oy) {
+	float w{ SCREEN_W };
+	float h{ SCREEN_H };
 	*x = (int)((ox * w + w) / 2);
 	*y = h - (int)((oy * h + h) / 2);
 }
@@ -1305,10 +1249,10 @@ float vertices[] = {
 
 };
 
-void InitBuffer()
+GLvoid InitBuffer()
 {
 
-	
+
 
 
 
@@ -1362,7 +1306,7 @@ void InitBuffer()
 
 }
 
-void InitShader()
+GLvoid InitShader()
 {
 	make_vertexShaders(); //--- 버텍스 세이더 만들기
 	make_fragmentShaders(); //--- 프래그먼트 세이더 만들기
@@ -1372,7 +1316,7 @@ void InitShader()
 	glAttachShader(s_program, fragmentShader);
 	glLinkProgram(s_program);
 
-	
+
 
 
 	//checkCompileErrors(s_program, "PROGRAM");
@@ -1380,45 +1324,45 @@ void InitShader()
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 
-	
+
 
 
 	//--- Shader Program 사용하기
 	glUseProgram(s_program);
 
-	
+
 }
 
 int beforeX = 0, beforeY = 0;
 
-void Mouse(int button, int state, int x, int y) {
+GLvoid Mouse(int button, int state, int x, int y) {
 	//GLfloat ox = 0, oy = 0;
 	//con_D_to_Ogl(x, y, &ox, &oy);
 
-	if (!left_button && button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
+	if (!left_button and button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
 		beforeX = x, beforeY = y;
 		left_button = true;
 	}
 
-	if (button == GLUT_LEFT_BUTTON && state == GLUT_UP) {
+	if (button == GLUT_LEFT_BUTTON and state == GLUT_UP) {
 		left_button = false;
 	}
 
-	if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
+	if (button == GLUT_RIGHT_BUTTON and state == GLUT_DOWN) {
 		right_button = true;
 	}
 
-	if (button == GLUT_RIGHT_BUTTON && state == GLUT_UP) {
+	if (button == GLUT_RIGHT_BUTTON and state == GLUT_UP) {
 		right_button = false;
 	}
 	glutSwapBuffers();
 	glutPostRedisplay();
 }
 
-void Motion(int x, int y) {
+GLvoid Motion(int x, int y) {
 
 	// 왼쪽 마우스가 눌렸을 때
-	if (left_button == true) {
+	if (left_button ) {
 
 		int afterX = x - beforeX;
 		int afterY = y - beforeY;
@@ -1428,7 +1372,7 @@ void Motion(int x, int y) {
 	}
 
 	// 오른쪽 마우스가 눌렸을 때
-	if (right_button == true) {
+	if (right_button ) {
 		;
 	}
 	else {
@@ -1458,7 +1402,7 @@ GLchar* filetobuf(const char* file)
 	return buf;
 }
 
-void make_vertexShaders() {
+GLvoid make_vertexShaders() {
 
 	vertexSource = filetobuf("vertex.glsl");
 	vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -1471,12 +1415,12 @@ void make_vertexShaders() {
 	if (!result)
 	{
 		glGetShaderInfoLog(vertexShader, 512, NULL, errorLog);
-		std::cerr << "ERROR: vertex shader 컴파일 실패\n" << errorLog << std::endl;
+		cerr << "ERROR: vertex shader 컴파일 실패\n" << errorLog << endl;
 		return;
 	}
 }
 
-void make_fragmentShaders()
+GLvoid make_fragmentShaders()
 {
 	GLchar* fragmentSource;
 	fragmentSource = filetobuf("fragment.glsl"); // 프래그세이더 읽어오기
@@ -1489,7 +1433,7 @@ void make_fragmentShaders()
 	if (!result)
 	{
 		glGetShaderInfoLog(fragmentShader, 512, NULL, errorLog);
-		std::cerr << "ERROR: fragment shader 컴파일 실패\n" << errorLog << std::endl;
+		cerr << "ERROR: fragment shader 컴파일 실패\n" << errorLog << endl;
 		return;
 	}
 }
@@ -1508,7 +1452,7 @@ GLuint make_shaderProgram()
 	glGetProgramiv(ShaderProgramID, GL_LINK_STATUS, &result); // ---세이더가 잘 연결되었는지 체크하기
 	if (!result) {
 		glGetProgramInfoLog(ShaderProgramID, 512, NULL, errorLog);
-		std::cerr << "ERROR: shader program 연결 실패\n" << errorLog << std::endl;
+		cerr << "ERROR: shader program 연결 실패\n" << errorLog << endl;
 	}
 	glUseProgram(ShaderProgramID); //--- 만들어진 세이더 프로그램 사용하기
 	//--- 여러 개의 세이더프로그램 만들 수 있고, 그 중 한개의 프로그램을 사용하려면

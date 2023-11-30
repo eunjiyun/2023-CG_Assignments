@@ -25,6 +25,9 @@
     <None Include="fragment.glsl" />
     <None Include="vertex.glsl" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="obj.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
