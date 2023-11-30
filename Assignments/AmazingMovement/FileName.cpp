@@ -24,22 +24,22 @@ bool right_button{};
 
 
 GLvoid drawScene(GLvoid);
-GLvoid Reshape(int , int );
-GLchar* filetobuf(const char* );
-GLvoid random_color(Rgb* );
-GLvoid Mouse(int , int , int , int );
-GLvoid con_D_to_Ogl(int , int , float* , float* );
-GLvoid con_Ogl_to_D(int* , int* , float , float );
-GLvoid Keyboard(unsigned char , int , int );
-GLvoid KeyboardUp(unsigned char , int , int );
-GLvoid KeyboardSpecial(int , int , int );
-GLvoid Motion(int , int );
-GLvoid TimerFunction(int );
+GLvoid Reshape(int, int);
+GLchar* filetobuf(const char*);
+GLvoid random_color(Rgb*);
+GLvoid Mouse(int, int, int, int);
+GLvoid con_D_to_Ogl(int, int, float*, float*);
+GLvoid con_Ogl_to_D(int*, int*, float, float);
+GLvoid Keyboard(unsigned char, int, int);
+GLvoid KeyboardUp(unsigned char, int, int);
+GLvoid KeyboardSpecial(int, int, int);
+GLvoid Motion(int, int);
+GLvoid TimerFunction(int);
 
-void subDFS(char** , bool** , int , int );
-GLvoid DFS(char** , bool** , int , int );
-GLchar** setMaze(int );
-GLvoid printMaze(char*** );
+void subDFS(char**, bool**, int, int);
+GLvoid DFS(char**, bool**, int, int);
+GLchar** setMaze(int);
+GLvoid printMaze(char***);
 
 GLvoid SetCamera();
 GLvoid SetProjection();
@@ -47,8 +47,8 @@ GLvoid SetTransform();
 GLvoid SetTransform_FPS();
 GLvoid set_radians();
 
-GLvoid draw_pillar(glm::mat4 , unsigned int );
-GLvoid draw_player(glm::mat4 , unsigned int );
+GLvoid draw_pillar(glm::mat4, unsigned int);
+GLvoid draw_player(glm::mat4, unsigned int);
 GLvoid draw_rect();
 GLvoid draw_rect_line();
 
@@ -70,7 +70,7 @@ GLvoid move_RIGHT();
 GLvoid move_UP();
 GLvoid move_DOWN();
 
-GLvoid ChangeVelocity(int );
+GLvoid ChangeVelocity(int);
 GLvoid LowHeight();
 
 GLchar* vertexSource, * fragmentSource;
@@ -281,6 +281,10 @@ GLvoid init_LOW_COL() {
 	Svalue = 2.0f / LOW;
 	if (Svalue <= 0) printf("Side Value Error = %f\n", Svalue);
 }
+//행:row
+//열:col
+//width=col*Svalue
+
 
 GLvoid init_PILLARS() {
 	// LOW와 COL에 따라, exist 부여.
@@ -294,6 +298,9 @@ GLvoid init_PILLARS() {
 			B[c][l].c = c;
 			B[c][l].l = l;
 			B[c][l].w = Svalue, B[c][l].h = Svalue;
+
+			
+			B[c][l].start_Animation = 10.f;
 
 			switch (dis2(gen)) {
 			case 0: B[c][l].dir = -2; break;
@@ -508,7 +515,8 @@ GLvoid SetTransform_FPS() {
 	TR = glm::translate(TR, glm::vec3(Xvalue, -0.9f, Zvalue));
 }
 
-
+bool fir{};
+int count{};
 GLvoid draw_pillar(glm::mat4 TR, unsigned int modelLocation) {
 	// 변의 길이 정하기.
 
@@ -516,17 +524,27 @@ GLvoid draw_pillar(glm::mat4 TR, unsigned int modelLocation) {
 
 	for (int c{}; c < COL; ++c) {
 		for (int l{}; l < LOW; ++l) {
-			if (B[c][l].show  and B[c][l].is ) {
+			if (B[c][l].show and B[c][l].is) {
 				GLfloat Xvalue = -1.0f + (Svalue / 2) + (Svalue * B[c][l].l); // 왼쪽 끝으로 이동 + 변의 1/2만큼 이동 + (LOW만큼 오른쪽으로)
 				GLfloat Zvalue = 1.0f - (Svalue / 2) - (Svalue * B[c][l].c); // 앞쪽 끝으로 이동 + 변의 1/2만큼 이동 + (COL만큼 뒤쪽으로)
 
-				TR = glm::translate(TR, glm::vec3(Xvalue, 0.0f, Zvalue));
-				TR = glm::scale(TR, glm::vec3(ScaleValue, 1.0f, ScaleValue));
+				//1201
+				//TR = glm::translate(TR, glm::vec3(B[c][l].x, B[(i * (int)maze_Width) + j].start_Animation, B[(i * (int)maze_Width) + j].z));
+
+				//TR = glm::translate(TR, glm::vec3(/*Xvalue*/  ScaleValue*l, B[c][l].start_Animation, /*Zvalue*/  ScaleValue * c));
+				TR = glm::translate(TR, glm::vec3(Xvalue, 0, Zvalue ));
+				TR = glm::scale(TR, glm::vec3(ScaleValue, 1.0f , ScaleValue));
 
 				// scale만큼 크기 조정.
 				TR = glm::translate(TR, glm::vec3(0.0f, -1.0f, 0.0f));
 				TR = glm::scale(TR, glm::vec3(1.0f, B[c][l].scale, 1.0f));
 				TR = glm::translate(TR, glm::vec3(0.0f, 1.0f, 0.0f));
+
+				if (!fir)
+				{
+					TR = glm::translate(TR, glm::vec3(0, 0.05f * B[c][l].start_Animation, 0));
+					
+				}
 
 				glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(TR));
 
@@ -545,6 +563,7 @@ GLvoid draw_pillar(glm::mat4 TR, unsigned int modelLocation) {
 			}
 		}
 	}
+	
 }
 
 
@@ -573,7 +592,7 @@ GLvoid draw_player(glm::mat4 TR, unsigned int modelLocation) {
 }
 
 GLvoid move_RIGHT() {
-	if (0==P.moving_dir  && (int)(P.x + 0.5f) + 1 <= LOW) { // 움직이고 있지 않을때만 && 
+	if (0 == P.moving_dir && (int)(P.x + 0.5f) + 1 <= LOW) { // 움직이고 있지 않을때만 && 
 		//printf("\nMoving Right, P.x(%f) <= LOW(%d)\n", P.x, LOW);
 		if (B[(int)(P.y + 0.5f)][(int)(P.x + 0.5f) + 1].show == 0) {
 			//printf("Going, B[%d][%d].show == 0 true\n", (int)(P.y + 0.5f), (int)(P.x + 0.5f) + 1);
@@ -587,7 +606,7 @@ GLvoid move_RIGHT() {
 }
 
 GLvoid move_LEFT() {
-	if (0==P.moving_dir  and 0<=(int)(P.x + 0.5f) - 1 ) { // 움직이고 있지 않을때만 적용
+	if (0 == P.moving_dir and 0 <= (int)(P.x + 0.5f) - 1) { // 움직이고 있지 않을때만 적용
 		//printf("\nMoving Left, P.x(%f) <= LOW(%d)\n", P.x, LOW);
 		if (B[(int)(P.y + 0.5f)][(int)(P.x + 0.5f) - 1].show == 0) {
 			//printf("Going, B[%d][%d].show == 0 true\n", (int)(P.y + 0.5f), (int)(P.x + 0.5f) - 1);
@@ -600,12 +619,12 @@ GLvoid move_LEFT() {
 }
 
 GLvoid move_UP() {
-	if (0==P.moving_dir  and LOW >=(int)(P.y + 0.5f) + 1 ) { // 움직이고 있지 않을때만 적용
+	if (0 == P.moving_dir and LOW >= (int)(P.y + 0.5f) + 1) { // 움직이고 있지 않을때만 적용
 		//printf("\nMoving Up, P.y(%f) <= LOW(%d)\n", P.y, LOW);
 		if (B[(int)(P.y + 0.5f) + 1][(int)(P.x + 0.5f)].show == 0) {
 			//printf("Going, B[%d][%d].show == 0 true\n", (int)(P.y + 0.5f) + 1, (int)(P.x + 0.5f));
 
-			if (!B[(int)(P.y + 0.5f) + 1][(int)(P.x + 0.5f)].is ) { // 목적지 도착, exist로 판별
+			if (!B[(int)(P.y + 0.5f) + 1][(int)(P.x + 0.5f)].is) { // 목적지 도착, exist로 판별
 				MessageBox(NULL, L"You arrived at destination", L"Game Clear",
 					MB_OK | MB_ICONINFORMATION);
 			}
@@ -620,7 +639,7 @@ GLvoid move_UP() {
 }
 GLvoid move_DOWN() {
 	printf("P.y = %d \n", (int)(P.y + 0.5f));
-	if (0==P.moving_dir  and 0<=(int)(P.y + 0.5f) - 1 ) { // 움직이고 있지 않을때만 적용
+	if (0 == P.moving_dir and 0 <= (int)(P.y + 0.5f) - 1) { // 움직이고 있지 않을때만 적용
 		//printf("\nMoving Up, P.y(%f) <= LOW(%d)\n", P.y, LOW);
 		if (B[(int)(P.y + 0.5f) - 1][(int)(P.x + 0.5f)].show == 0) {
 			//printf("Going, B[%d][%d].show == 0 true\n", (int)(P.y + 0.5f) - 1, (int)(P.x + 0.5f));
@@ -653,7 +672,7 @@ void gen_maze() {
 		}
 	}
 
-	if (0==LOW % 2 ) { // 짝수라면
+	if (0 == LOW % 2) { // 짝수라면
 		B[1][LOW - 2].show = false;
 		B[0][LOW - 2].show = false;
 		B[LOW - 1][1].show = false;
@@ -665,7 +684,7 @@ void gen_maze() {
 	}
 
 	int maze_LOW{ LOW / 2 - 1 };
-	if (0==LOW % 2 ) --maze_LOW;
+	if (0 == LOW % 2) --maze_LOW;
 
 	char** maze{ setMaze(maze_LOW) };
 	// printMaze(&maze);
@@ -709,19 +728,19 @@ GLvoid LowHeight() {
 			if (B[c][l].is) {
 				B[c][l].scale = B[c][l].min_scale + B[c][l].velocity + 0.001f;
 
-				
+
 			}
 		}
 	}
 
-	
+
 }
 
 GLvoid ChangeVelocity(int d) {
 	for (int c{}; c < COL; ++c) {
 		for (int l{}; l < LOW; ++l) {
-			if (B[c][l].is ) {
-				if (-1==d ) {
+			if (B[c][l].is) {
+				if (-1 == d) {
 					printf(" - pressed : ");
 					if (B[c][l].velocity - 0.0005f > 0.0f) {
 						printf("Velocity reduction\n");
@@ -731,7 +750,7 @@ GLvoid ChangeVelocity(int d) {
 						printf("Velocity reduction limit\n");
 					}
 				}
-				else if (1==d ) {
+				else if (1 == d) {
 					printf(" + pressed : ");
 					if (B[c][l].velocity + 0.001f < 0.05f) {
 						printf("Velocity increase\n");
@@ -754,7 +773,7 @@ GLvoid init_ALL() {
 	cameraPosZ = 2.0f;
 	cameraPosX = 0.0f;
 
-	
+
 
 	perspective_view = 1;
 	perspective_Z = -5.0f;
@@ -766,22 +785,46 @@ GLvoid init_ALL() {
 	ra = 0.0f;
 	show_player = false;
 	view_fps = false;
-	
-	
+
+	for(int i{};i<COL;++i)
+		for(int j{};j<LOW;++j)
+			B[i][j].start_Animation = 10.f;
+
 }
 
+bool start_Flag{ true };
+int ani{};
+
 GLvoid TimerFunction(int value) {
+
+
+	if (start_Flag)//1201
+	{
+
+		ani += 3;
+		for(int i{};i<COL;++i)
+		for (int j{}; j< LOW; ++j)
+		{
+
+			if (ani >= i*j+j && B[i][j].start_Animation > 0.f)
+				B[i][j].start_Animation -= 0.3f;
+			if (B[i][j].start_Animation <= 0.f)
+				B[i][j].start_Animation = 0.f;
+
+		}
+		if (B[COL-1][LOW-1].start_Animation == 0.f)
+			start_Flag = false;
+	}
 
 	// scale 조정. -> B[c][l] 각각의 max_scale if문 달아야 함.
 	// scale 얼마나? -> velocity 따라서 증감. dir따라서 감소할지 증가할지 정해주기.
 
-	bool init{};
 	for (int c{}; c < COL; ++c) {
 		for (int l{}; l < LOW; ++l) {
-			if (B[c][l].show  and B[c][l].is ) {
+			if (B[c][l].show and B[c][l].is) {
 
 				if (firAni) {
-					if (-2==B[c][l].dir ) { // 내려가는 방향일 때. so 감소
+					if (-2 == B[c][l].dir) { // 내려가는 방향일 때. so 감소
 						if (B[c][l].scale <= B[c][l].min_scale) { // 최저보다 작아지면
 							B[c][l].dir *= -1; // 반대 방향으로
 						}
@@ -789,7 +832,7 @@ GLvoid TimerFunction(int value) {
 							B[c][l].scale -= B[c][l].velocity;
 						}
 					}
-					else if (2==B[c][l].dir ) { // 올라가는 방향일 때. so 증가
+					else if (2 == B[c][l].dir) { // 올라가는 방향일 때. so 증가
 						if (B[c][l].scale >= B[c][l].max_scale) { // 최저보다 작아지면
 							B[c][l].dir *= -1; // 반대 방향으로
 						}
@@ -817,7 +860,7 @@ GLvoid TimerFunction(int value) {
 						}
 					}
 
-					
+
 				}
 				else if (thiAni) {
 					if (-2 == B[c][l].dir) { // 내려가는 방향일 때. so 감소
@@ -847,7 +890,7 @@ GLvoid TimerFunction(int value) {
 	switch (P.moving_dir) {
 	case 0: break;
 	case -1: // Left
-		if (19 >=P.cnt ) {
+		if (19 >= P.cnt) {
 			P.x -= 0.05f; P.cnt++;
 		}
 		else {
@@ -856,7 +899,7 @@ GLvoid TimerFunction(int value) {
 		}
 		break;
 	case 1: // Right
-		if (19 >=P.cnt ) {
+		if (19 >= P.cnt) {
 			P.x += 0.05f; P.cnt++;
 		}
 		else {
@@ -865,7 +908,7 @@ GLvoid TimerFunction(int value) {
 		}
 		break;
 	case -2: // Down
-		if (19 >= P.cnt ) {
+		if (19 >= P.cnt) {
 			P.y -= 0.05f; P.cnt++;
 		}
 		else {
@@ -874,7 +917,7 @@ GLvoid TimerFunction(int value) {
 		}
 		break;
 	case 2: // Up
-		if (19 >= P.cnt ) {
+		if (19 >= P.cnt) {
 			P.y += 0.05f; P.cnt++;
 		}
 		else {
@@ -884,10 +927,10 @@ GLvoid TimerFunction(int value) {
 		break;
 	}
 
-	if (1==Rotate_Y_Anime ) {
+	if (1 == Rotate_Y_Anime) {
 		cameraY += 0.3f;
 	}
-	else if (-1==Rotate_Y_Anime ) {
+	else if (-1 == Rotate_Y_Anime) {
 		cameraY -= 0.3f;
 	}
 
@@ -938,8 +981,8 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 
 	switch (key) {
 		//애니메이션 1 2 3
-	case '1': 
-		if(1!=preAni)
+	case '1':
+		if (1 != preAni)
 			init_ALL();
 		if (firAni) {
 			printf(" M pressed : Pillar animation stop\n");
@@ -950,6 +993,7 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 			firAni = true;
 		}
 		preAni = 1;
+		fir = true;
 		break;
 	case '2':
 		if (2 != preAni)
@@ -970,20 +1014,21 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 				for (int l{}; l < LOW; ++l)
 				{
 
-					
-						B[c][l].dir = -2;
-						B[c][l].scale = 0.75f / LOW * l+0.35f;
-						B[c][l].velocity = 0.000000005f / LOW * (LOW-l) + 0.004999995f;//속도
-						
-						B[c][l].max_scale = firMax;//최대 최소
-						B[c][l].min_scale = firMin;
 
-						
-				
+					B[c][l].dir = -2;
+					B[c][l].scale = 0.75f / LOW * l + 0.35f;
+					B[c][l].velocity = 0.000000005f / LOW * (LOW - l) + 0.004999995f;//속도
+
+					B[c][l].max_scale = firMax;//최대 최소
+					B[c][l].min_scale = firMin;
+
+
+
 				}
-			
+
 		}
 		preAni = 2;
+		fir = true;
 		break;
 	case '3':
 		if (3 != preAni)
@@ -996,7 +1041,7 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 			printf(" M pressed : Pillar animation play\n");
 			thiAni = true;
 
-			float firVel=  0.002f + (float)rand() / (RAND_MAX) / 300;//0.002 0.005
+			float firVel = 0.002f + (float)rand() / (RAND_MAX) / 300;//0.002 0.005
 			float secVel = 0.002f + (float)rand() / (RAND_MAX) / 300;
 			float firMax = 0.5f + ((float)rand() / (RAND_MAX) / 2);
 			float secMax = 0.5f + ((float)rand() / (RAND_MAX) / 2);
@@ -1006,7 +1051,7 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 			for (int c{}; c < COL; ++c)
 				for (int l{}; l < LOW; ++l)
 				{
-					
+
 					if (0 == c % 2)//애니메이션
 					{
 						B[c][l].dir = -2;
@@ -1025,11 +1070,12 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 						B[c][l].max_scale = secMax;//0.5 1
 						B[c][l].min_scale = secMin;//// 0.1f에서 0.35f까지의 난수 생성
 					}
-					
-					
+
+
 				}
 		}
 		preAni = 3;
+		fir = true;
 		break;
 		//조명 on off
 	case 't':
@@ -1083,7 +1129,7 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 			chooseCol = 4;
 		}
 		else if (4 == chooseCol) {
-			glUniform3f(lightColorLocation, l,l, l);
+			glUniform3f(lightColorLocation, l, l, l);
 			chooseCol = 1;
 		}
 	}
@@ -1124,6 +1170,28 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 		perspective_Z = -5.0f;
 		Rotate_Y_Anime = 0;
 		cameraY = 0.0f;
+		fir = false;
+		start_Flag = true;
+		break;
+	case '7': // 1인칭
+		view_fps = true;
+		perspective_view = true;
+		printf(" 1 pressed : View on FPS\n");
+		break;
+	case '9': // 쿼터뷰
+		view_fps = false;
+		printf(" 3 pressed : View on TPS\n");
+		break;
+	case 'p': case 'P':
+		PrintInstruction();
+		break;
+	case 'o':  // 직각 투영
+		printf(" O pressed : Ortho View\n");
+		perspective_view = false;
+		break;
+	case 'O': // 원근 투영
+		printf(" P pressed : Perspective View\n");
+		perspective_view = true;
 		break;
 		//종료
 	case 'Q': case 'q':
@@ -1131,15 +1199,10 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 		exit(0);
 		break;
 
-	case 'o': case 'O': // 직각 투영
-		printf(" O pressed : Ortho View\n");
-		perspective_view = false;
-		break;
 
-	case 'p': case 'P': // 원근 투영
-		printf(" P pressed : Perspective View\n");
-		perspective_view = true;
-		break;
+
+
+	
 
 	case 'z': // 원근 투영 시 z축 이동, 작아짐
 		if (perspective_view) {
@@ -1154,7 +1217,7 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 		}
 		break;
 
-	
+
 
 	case 'R': // 미로 제작 --> 미로가 된 부분 육면체가 없어짐
 		printf(" R pressed : Make Maze\n");
@@ -1194,19 +1257,9 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 
 
 
-	case 'h': case 'H':
-		PrintInstruction();
-		break;
+	
 
-	case '7': // 1인칭
-		view_fps = true;
-		perspective_view = true;
-		printf(" 1 pressed : View on FPS\n");
-		break;
-	case '9': // 쿼터뷰
-		view_fps = false;
-		printf(" 3 pressed : View on TPS\n");
-		break;
+	
 
 
 	}
@@ -1293,7 +1346,7 @@ void subDFS(char** maze, bool** visited, int y, int x) {
 		{ 2,1,0,3 },{ 2,1,3,0 },{ 2,0,1,3 },{ 2,0,3,1 },{ 2,3,1,0 },{ 2,3,0,1 },
 		{ 3,1,2,0 },{ 3,1,0,2 },{ 3,2,1,0 },{ 3,2,0,1 },{ 3,0,1,2 },{ 3,0,2,1 }
 	};
-	for (i=0; i < 4; ++i) {
+	for (i = 0; i < 4; ++i) {
 		if (y + dy[arr[num][i]] >= 1 && y + dy[arr[num][i]] < size - 1 && x + dx[arr[num][i]] >= 1 && x + dx[arr[num][i]] < size - 1 && visited[y + dy[arr[num][i]]][x + dx[arr[num][i]]] == false) {
 			*(*(maze + y + wy[arr[num][i]]) + x + wx[arr[num][i]]) = '.';
 			B[y + wy[arr[num][i]]][x + wx[arr[num][i]]].show = false;
@@ -1489,7 +1542,7 @@ GLvoid Mouse(int button, int state, int x, int y) {
 GLvoid Motion(int x, int y) {
 
 	// 왼쪽 마우스가 눌렸을 때
-	if (left_button ) {
+	if (left_button) {
 
 		int afterX = x - beforeX;
 		int afterY = y - beforeY;
@@ -1499,7 +1552,7 @@ GLvoid Motion(int x, int y) {
 	}
 
 	// 오른쪽 마우스가 눌렸을 때
-	if (right_button ) {
+	if (right_button) {
 		;
 	}
 	else {

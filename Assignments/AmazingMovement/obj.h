@@ -41,7 +41,7 @@ public:
 	int c; // col num
 	GLfloat w; // x 너비
 	GLfloat h; // y 너비
-
+	float start_Animation{};
 	GLfloat max_scale;
 	GLfloat min_scale;
 
