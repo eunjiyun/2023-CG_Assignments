@@ -94,7 +94,9 @@ GLfloat perspective_Z{ -5.0f };
 
 GLfloat Svalue;
 
-int UpDownMoveAnime{  };
+int firAni{  };
+bool secAni{  };
+bool thiAni{};
 
 GLfloat ra{ 0.0f };
 int show_player{};
@@ -215,7 +217,7 @@ int LOW{}, COL{};
 
 GLvoid main(int argc, char** argv) //--- 윈도우 출력하고 콜백함수 설정 
 {
-	PlaySound(L"inGame.wav", NULL, SND_ASYNC | SND_LOOP);
+	PlaySound(L"bgm.wav", NULL, SND_ASYNC | SND_LOOP);
 
 	init_LOW_COL();
 
@@ -299,8 +301,8 @@ GLvoid init_PILLARS() {
 			}
 
 			// scale => 0.0f => 1.0f
-			B[c][l].max_scale = 0.5f + ((float)rand() / (RAND_MAX) / 2);
-			B[c][l].min_scale = 0.1f + ((float)rand() / (RAND_MAX) / 4);
+			B[c][l].max_scale = 0.5f + ((float)rand() / (RAND_MAX) / 2);//0.5 1
+			B[c][l].min_scale = 0.1f + ((float)rand() / (RAND_MAX) / 4);//// 0.1f에서 0.35f까지의 난수 생성
 
 			if (B[c][l].max_scale < B[c][l].min_scale) printf("\n\n\n\n!!!! MIN SCALE ERROR !!!!\n\n\n\n");
 
@@ -603,7 +605,7 @@ GLvoid move_UP() {
 		if (B[(int)(P.y + 0.5f) + 1][(int)(P.x + 0.5f)].show == 0) {
 			//printf("Going, B[%d][%d].show == 0 true\n", (int)(P.y + 0.5f) + 1, (int)(P.x + 0.5f));
 
-			if (B[(int)(P.y + 0.5f) + 1][(int)(P.x + 0.5f)].is == false) { // 목적지 도착, exist로 판별
+			if (!B[(int)(P.y + 0.5f) + 1][(int)(P.x + 0.5f)].is ) { // 목적지 도착, exist로 판별
 				MessageBox(NULL, L"You arrived at destination", L"Game Clear",
 					MB_OK | MB_ICONINFORMATION);
 			}
@@ -701,14 +703,18 @@ GLvoid SetProjection() {
 }
 
 GLvoid LowHeight() {
-	UpDownMoveAnime = false;
+	firAni = false;
 	for (int c{}; c < COL; ++c) {
 		for (int l{}; l < LOW; ++l) {
 			if (B[c][l].is) {
 				B[c][l].scale = B[c][l].min_scale + B[c][l].velocity + 0.001f;
+
+				
 			}
 		}
 	}
+
+	
 }
 
 GLvoid ChangeVelocity(int d) {
@@ -748,20 +754,19 @@ GLvoid init_ALL() {
 	cameraPosZ = 2.0f;
 	cameraPosX = 0.0f;
 
-	Rotate_Y_Anime = 0;
-	cameraY = 0.0f;
+	
 
 	perspective_view = 1;
 	perspective_Z = -5.0f;
 
-	UpDownMoveAnime = false;
+	firAni = false;
+	secAni = false;
+	thiAni = false;
 
 	ra = 0.0f;
 	show_player = false;
 	view_fps = false;
-	off = true;
-	chooseCol = 1;
-	initLight = false;
+	
 	
 }
 
@@ -769,11 +774,13 @@ GLvoid TimerFunction(int value) {
 
 	// scale 조정. -> B[c][l] 각각의 max_scale if문 달아야 함.
 	// scale 얼마나? -> velocity 따라서 증감. dir따라서 감소할지 증가할지 정해주기.
+
+	bool init{};
 	for (int c{}; c < COL; ++c) {
 		for (int l{}; l < LOW; ++l) {
 			if (B[c][l].show  and B[c][l].is ) {
 
-				if (UpDownMoveAnime) {
+				if (firAni) {
 					if (-2==B[c][l].dir ) { // 내려가는 방향일 때. so 감소
 						if (B[c][l].scale <= B[c][l].min_scale) { // 최저보다 작아지면
 							B[c][l].dir *= -1; // 반대 방향으로
@@ -788,6 +795,30 @@ GLvoid TimerFunction(int value) {
 						}
 						else {
 							B[c][l].scale += B[c][l].velocity;
+						}
+					}
+				}
+				else if (secAni) {
+					
+
+					
+				}
+				else if (thiAni) {
+					if (-2 == B[c][l].dir) { // 내려가는 방향일 때. so 감소
+						if (B[c][l].scale <= B[c][l].min_scale) { // 최저보다 작아지면
+							B[c][l].dir *= -1; // 반대 방향으로
+						}
+						else {
+							B[c][l].scale -= B[c][l].velocity;
+						}
+					}
+					else if (2 == B[c][l].dir) { // 올라가는 방향일 때. so 증가
+						if (B[c][l].scale >= B[c][l].max_scale) { // 최저보다 작아지면
+							B[c][l].dir *= -1; // 반대 방향으로
+						}
+						else {
+							B[c][l].scale += B[c][l].velocity;
+
 						}
 					}
 				}
@@ -884,23 +915,86 @@ GLvoid PrintInstruction() {
 
 	printf("\n ---------------------------------------------------------\n");
 };
-
+int preAni{};
 GLvoid Keyboard(unsigned char key, int x, int y) {
 
 	// 콘솔창에서 가로, 세로 나누기 개수를 입력 받음.
 
 	switch (key) {
 		//애니메이션 1 2 3
-	case '1': // 1인칭
-		view_fps = true;
-		perspective_view = true;
-		printf(" 1 pressed : View on FPS\n");
+	case '1': 
+		if(1!=preAni)
+			init_ALL();
+		if (firAni) {
+			printf(" M pressed : Pillar animation stop\n");
+			firAni = false;
+		}
+		else {
+			printf(" M pressed : Pillar animation play\n");
+			firAni = true;
+		}
+		preAni = 1;
 		break;
 	case '2':
+		if (2 != preAni)
+			init_ALL();
+		if (secAni) {
+			printf(" M pressed : Pillar animation stop\n");
+			secAni = false;
+		}
+		else {
+			printf(" M pressed : Pillar animation play\n");
+			secAni = true;
+
+			
+		}
+		preAni = 2;
 		break;
-	case '3': // 쿼터뷰
-		view_fps = false;
-		printf(" 3 pressed : View on TPS\n");
+	case '3':
+		if (3 != preAni)
+			init_ALL();
+		if (thiAni) {
+			printf(" M pressed : Pillar animation stop\n");
+			thiAni = false;
+		}
+		else {
+			printf(" M pressed : Pillar animation play\n");
+			thiAni = true;
+
+			float firVel=  0.002f + (float)rand() / (RAND_MAX) / 300;
+			float secVel = 0.002f + (float)rand() / (RAND_MAX) / 300;
+			float firMax = 0.5f + ((float)rand() / (RAND_MAX) / 2);
+			float secMax = 0.5f + ((float)rand() / (RAND_MAX) / 2);
+			float firMin = 0.1f + ((float)rand() / (RAND_MAX) / 4);
+			float secMin = 0.1f + ((float)rand() / (RAND_MAX) / 4);
+
+			for (int c{}; c < COL; ++c)
+				for (int l{}; l < LOW; ++l)
+				{
+					
+					if (0 == c % 2)//애니메이션
+					{
+						B[c][l].dir = -2;
+						B[c][l].scale = 1;
+						B[c][l].velocity = firVel;//속도
+
+						B[c][l].max_scale = firMax;//최대 최소
+						B[c][l].min_scale = firMin;
+					}
+					else
+					{
+						B[c][l].dir = 2;
+						B[c][l].scale = 0.35;
+						B[c][l].velocity = secVel;
+
+						B[c][l].max_scale = secMax;//0.5 1
+						B[c][l].min_scale = secMin;//// 0.1f에서 0.35f까지의 난수 생성
+					}
+					
+					
+				}
+		}
+		preAni = 3;
 		break;
 		//조명 on off
 	case 't':
@@ -988,13 +1082,13 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 
 		init_LOW_COL();
 		init_ALL();
-
+		off = true;
+		chooseCol = 1;
+		initLight = false;
 		perspective_view = true;
 		perspective_Z = -5.0f;
-
-		
-
-	
+		Rotate_Y_Anime = 0;
+		cameraY = 0.0f;
 		break;
 		//종료
 	case 'Q': case 'q':
@@ -1025,19 +1119,7 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 		}
 		break;
 
-	case 'm': case 'M':
-		if (UpDownMoveAnime) {
-			printf(" M pressed : Pillar animation stop\n");
-			UpDownMoveAnime = false;
-		}
-		else {
-			printf(" M pressed : Pillar animation play\n");
-			UpDownMoveAnime = true;
-		}
-		break;
-
-
-
+	
 
 	case 'R': // 미로 제작 --> 미로가 된 부분 육면체가 없어짐
 		printf(" R pressed : Make Maze\n");
@@ -1050,7 +1132,7 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 		if (pressed_V) {
 			printf(" V pressed : Play Pillar animation\n");
 			pressed_V = false;
-			UpDownMoveAnime = true;
+			firAni = true;
 		}
 		else {
 			printf(" V pressed : Stop Pillar animation, translate to low height\n");
@@ -1079,6 +1161,16 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 
 	case 'h': case 'H':
 		PrintInstruction();
+		break;
+
+	case '7': // 1인칭
+		view_fps = true;
+		perspective_view = true;
+		printf(" 1 pressed : View on FPS\n");
+		break;
+	case '9': // 쿼터뷰
+		view_fps = false;
+		printf(" 3 pressed : View on TPS\n");
 		break;
 
 
