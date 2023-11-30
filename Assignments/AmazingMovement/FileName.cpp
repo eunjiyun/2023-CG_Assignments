@@ -144,6 +144,9 @@ GLfloat ra = 0.0f;
 int show_player = false;
 int view_fps = false;
 
+bool off{ false };
+int lightColorLocation{};
+
 GLfloat pos[TRI_COUNT * 3][3] =
 {
 	// 아래 0
@@ -956,6 +959,62 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 	// 콘솔창에서 가로, 세로 나누기 개수를 입력 받음.
 
 	switch (key) {
+		//애니메이션 1 2 3
+	case '1': // 1인칭
+		view_fps = true;
+		perspective_view = true;
+		printf(" 1 pressed : View on FPS\n");
+		break;
+	case '2':
+		break;
+	case '3': // 쿼터뷰
+		view_fps = false;
+		printf(" 3 pressed : View on TPS\n");
+		break;
+		//조명 on off
+	case 't':
+		if (off)
+			off = false;
+		else
+			off = true;
+		break;
+		//조명 색 변경
+	case 'c':
+		break;
+		//카메라가 바닥의 y측 기준 양/음 공전, 다시 누르면 정지 
+	case 'y': // 바닥 y축 기준, 양 / 음 방향 회전
+		if (Rotate_Y_Anime == 0) {
+			printf(" y pressed : Y rotate animation play, Negative direction\n");
+			Rotate_Y_Anime = -1;
+		}
+		break;
+
+	case 'Y':
+		if (Rotate_Y_Anime == 0) {
+			printf(" Y pressed : Y rotate animation play, Positive direction\n");
+			Rotate_Y_Anime = 1;
+		}
+		break;
+	case '+': // 육면체 이동하는 속도 증가
+		ChangeVelocity(1);
+		break;
+	case '-': // 육면체 이동하는 속도 감소
+		ChangeVelocity(-1);
+		break;
+	case 'r':  // 모든 값 초기화
+		printf(" C pressed : Initialize entire values\n");
+
+		init_LOW_COL();
+		init_ALL();
+
+		perspective_view = true;
+		perspective_Z = -5.0f;
+		break;
+		//종료
+	case 'Q': case 'q':
+		printf(" Q pressed : Quit program\n");
+		exit(0);
+		break;
 
 	case 'o': case 'O': // 직각 투영
 		printf(" O pressed : Ortho View\n");
@@ -992,19 +1051,7 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 		break;
 
 
-	case 'y': // 바닥 y축 기준, 양 / 음 방향 회전
-		if (Rotate_Y_Anime == 0) {
-			printf(" y pressed : Y rotate animation play, Negative direction\n");
-			Rotate_Y_Anime = -1;
-		}
-		break;
-
-	case 'Y':
-		if (Rotate_Y_Anime == 0) {
-			printf(" Y pressed : Y rotate animation play, Positive direction\n");
-			Rotate_Y_Anime = 1;
-		}
-		break;
+	
 
 	case 'R': // 미로 제작 --> 미로가 된 부분 육면체가 없어짐
 		printf(" R pressed : Make Maze\n");
@@ -1027,12 +1074,7 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 
 		break;
 
-	case '+': // 육면체 이동하는 속도 증가
-		ChangeVelocity(1);
-		break;
-	case '-': // 육면체 이동하는 속도 감소
-		ChangeVelocity(-1);
-		break;
+	
 
 	case 's': case 'S': // 미로에서 객체가 나타남 (플레이어)
 		if (show_player) {
@@ -1045,34 +1087,15 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 		}
 		break;
 
-	case '1': // 1인칭
-		view_fps = true;
-		perspective_view = true;
-		printf(" 1 pressed : View on FPS\n");
-		break;
-	case '3': // 쿼터뷰
-		view_fps = false;
-		printf(" 3 pressed : View on TPS\n");
-		break;
+	
 
-	case 'r':  // 모든 값 초기화
-		printf(" C pressed : Initialize entire values\n");
-		
-		init_LOW_COL();
-		init_ALL();
-		
-		perspective_view = true;
-		perspective_Z = -5.0f;
-		break;
+	
 
 	case 'h': case 'H':
 		PrintInstruction();
 		break;
 
-	case 'Q': case 'q':
-		printf(" Q pressed : Quit program\n");
-		exit(0);
-		break;
+	
 	}
 	glutPostRedisplay();
 }
@@ -1281,11 +1304,18 @@ void InitBuffer()
 
 	unsigned int lightPosLocation = glGetUniformLocation(s_program, "lightPos"); //--- lightPos 값 전달: (0.0, 0.0, 5.0);
 	glUniform3f(lightPosLocation, 0.0, 0.0, 5.0);
-	int lightColorLocation = glGetUniformLocation(s_program, "lightColor"); //--- lightColor 값 전달: (1.0, 1.0, 1.0) 백색
-	glUniform3f(lightColorLocation, 1.0, 1.0, 1.0);
+	lightColorLocation = glGetUniformLocation(s_program, "lightColor"); //--- lightColor 값 전달: (1.0, 1.0, 1.0) 백색
+
+	if(!off)
+		glUniform3f(lightColorLocation, 1.0, 1.0, 1.0);
+	else
+		glUniform3f(lightColorLocation, 0.3, 0.3, 0.3);
+
 	//int objColorLocation = glGetUniformLocation(shaderProgram, “objectColor”); //--- object Color값 전달: (1.0, 0.5, 0.3)의 색
 	//glUniform3f(objColorLocation, 1.0, 0.5, 0.3);
 
+	unsigned int viewPosLocation = glGetUniformLocation(s_program, "viewPos"); //--- viewPos 값 전달: 카메라 위치
+	glUniform3f(viewPosLocation, cameraPosX, cameraY, cameraPosZ);
 
 
 }
@@ -1300,9 +1330,7 @@ void InitShader()
 	glAttachShader(s_program, fragmentShader);
 	glLinkProgram(s_program);
 
-	//// lightColor 값을 설정
-	//int lightColorLocation = glGetUniformLocation(s_program, "lightColor");
-	//glUniform3f(lightColorLocation, 1.0f, 1.0f, 1.0f);  // 백색 조명 (예: 흰색)
+	
 
 
 	//checkCompileErrors(s_program, "PROGRAM");
