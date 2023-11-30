@@ -15,13 +15,22 @@ uniform vec3 viewPos; //--- viewPos 값 전달: 카메라 위치
 
 void main() {
 
-	float ambientLight = 0.3; //--- 주변 조명 계수: 0.0 ≤ ambientLight ≤ 1.0
+	float ambientLight = 1.0; //--- 주변 조명 계수: 0.0 ≤ ambientLight ≤ 1.0
 	vec3 ambient = ambientLight * lightColor; //--- 주변 조명값
 
 	vec3 normalVector = normalize(Normal); //--- 노말값을 정규화한다.
 	vec3 lightDir = normalize(lightPos-vec3(FragPos.x,FragPos.y,FragPos.z)); //--- 표면과 조명의 위치로 조명의 방향을 결정한다.
 	float diffuseLight = max(dot (Normal, lightDir), 0.0); //--- N과 L의 내적 값으로 강도 조절 (음의 값을 가질 수 없게 한다.)
-	float diffuse = diffuseLight * lightColor.x; //--- 산란반사조명값=산란반사값*조명색상값
+
+	float lc;
+	if(lightColor.x>0)
+		lc=lightColor.x;
+	else if(lightColor.y>0)
+		lc=lightColor.y;
+	else if(lightColor.z>0)
+		lc=lightColor.z;
+	
+	float diffuse = diffuseLight * lc; //--- 산란반사조명값=산란반사값*조명색상값
 
 	int shininess = 128; //--- 광택 계수
 	vec3 viewDir = normalize(viewPos-vec3(FragPos.x,FragPos.y,FragPos.z)); //--- 관찰자의 방향

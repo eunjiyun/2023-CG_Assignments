@@ -144,8 +144,10 @@ GLfloat ra = 0.0f;
 int show_player = false;
 int view_fps = false;
 
-bool off{ false };
+bool off{ true };
 int lightColorLocation{};
+int chooseCol{ 1 };
+bool initLight{ false };
 
 GLfloat pos[TRI_COUNT * 3][3] =
 {
@@ -973,13 +975,53 @@ GLvoid Keyboard(unsigned char key, int x, int y) {
 		break;
 		//조명 on off
 	case 't':
-		if (off)
-			off = false;
-		else
+
+		lightColorLocation = glGetUniformLocation(s_program, "lightColor"); //--- lightColor 값 전달: (1.0, 1.0, 1.0) 백색
+
+		if (!off){
+			if (1 == chooseCol)
+				glUniform3f(lightColorLocation, 0.3, 0.3, 0.3);
+			else if (2 == chooseCol)
+				glUniform3f(lightColorLocation, 0.3, 0.0, 0.0);
+			else if (3 == chooseCol)
+				glUniform3f(lightColorLocation, 0.0, 0.3, 0.0);
+			else if (4 == chooseCol)
+				glUniform3f(lightColorLocation, 0.3, 0.0, 0.3);
 			off = true;
+		}
+		else{
+			if (1 == chooseCol)
+				glUniform3f(lightColorLocation, 1.0, 1.0, 1.0);
+			else if (2 == chooseCol)
+				glUniform3f(lightColorLocation, 1.0, 0.0, 0.0);
+			else if (3 == chooseCol)
+				glUniform3f(lightColorLocation, 0.0, 1.0, 0.0);
+			else if (4 == chooseCol)
+				glUniform3f(lightColorLocation, 0.3, 0.0, 1.0);
+			off = false;
+		}
 		break;
 		//조명 색 변경
 	case 'c':
+		lightColorLocation = glGetUniformLocation(s_program, "lightColor"); //--- lightColor 값 전달: (1.0, 1.0, 1.0) 백색
+
+
+		if (1 == chooseCol){
+			glUniform3f(lightColorLocation, 1.0, 0.0, 0.0);
+			chooseCol = 2;
+		}
+		else if (2 == chooseCol){
+			glUniform3f(lightColorLocation, 0.0, 1.0, 0.0);
+			chooseCol = 3;
+		}
+		else if (3 == chooseCol){
+			glUniform3f(lightColorLocation, 0.0, 0.0, 1.0);
+			chooseCol = 4;
+		}
+		else if (4 == chooseCol){
+			glUniform3f(lightColorLocation, 1.0, 1.0, 1.0);
+			chooseCol = 1;
+		}
 		break;
 		//카메라가 바닥의 y측 기준 양/음 공전, 다시 누르면 정지 
 	case 'y': // 바닥 y축 기준, 양 / 음 방향 회전
@@ -1304,12 +1346,12 @@ void InitBuffer()
 
 	unsigned int lightPosLocation = glGetUniformLocation(s_program, "lightPos"); //--- lightPos 값 전달: (0.0, 0.0, 5.0);
 	glUniform3f(lightPosLocation, 0.0, 0.0, 5.0);
-	lightColorLocation = glGetUniformLocation(s_program, "lightColor"); //--- lightColor 값 전달: (1.0, 1.0, 1.0) 백색
 
-	if(!off)
-		glUniform3f(lightColorLocation, 1.0, 1.0, 1.0);
-	else
+	if (!initLight) {
+		lightColorLocation = glGetUniformLocation(s_program, "lightColor"); //--- lightColor 값 전달: (1.0, 1.0, 1.0) 백색
 		glUniform3f(lightColorLocation, 0.3, 0.3, 0.3);
+		initLight = true;
+	}
 
 	//int objColorLocation = glGetUniformLocation(shaderProgram, “objectColor”); //--- object Color값 전달: (1.0, 0.5, 0.3)의 색
 	//glUniform3f(objColorLocation, 1.0, 0.5, 0.3);
